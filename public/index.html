@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Alprolimp">
+<title>Alprolimp — Premisse Curitiba</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--teal:#0F6E56;--teal-mid:#1D9E75;--teal-lt:#E1F5EE;--teal-bdr:#9FE1CB;--dark:#111816;--dark2:#1C2420;--gray:#6B7B75;--gray-lt:#F4F6F5;--gray-bd:#E0E6E3;--white:#FFFFFF;--bg:#F7FAF8;--amber:#EF9F27}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--dark);min-height:100vh;max-width:430px;margin:0 auto}
+.hdr{background:var(--dark);padding:14px 16px 0;position:sticky;top:0;z-index:100}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.logo{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff;letter-spacing:-.02em}
+.logo span{color:var(--teal-mid)}
+.status-row{display:flex;align-items:center;gap:6px;font-size:11px;color:#9FE1CB}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--teal-mid);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.tabs{display:flex;gap:2px;background:var(--dark2);padding:4px;border-radius:12px 12px 0 0}
+.tab{flex:1;padding:9px 4px;border:none;background:transparent;color:#7A9A8E;font-size:11px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;border-radius:8px;transition:all .2s}
+.tab.active{background:var(--teal);color:#fff}
+.tab-icon{font-size:14px;display:block;margin-bottom:2px}
+.content{padding:14px;min-height:calc(100vh - 115px)}
+.panel{display:none}.panel.active{display:block}
+.card{background:#fff;border-radius:14px;border:1px solid var(--gray-bd);padding:14px;margin-bottom:12px}
+.card-title{font-size:13px;font-weight:500;color:var(--dark);margin-bottom:10px}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.metric{background:var(--dark);border-radius:12px;padding:12px 8px;text-align:center}
+.metric-val{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:var(--teal-mid)}
+.metric-lbl{font-size:10px;color:#7A9A8E;margin-top:2px}
+.chat-wrap{background:#fff;border-radius:14px;border:1px solid var(--gray-bd);overflow:hidden;margin-bottom:12px}
+.chat-head{background:var(--dark);padding:12px 14px;display:flex;align-items:center;gap:10px}
+.chat-av{width:38px;height:38px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:16px}
+.chat-hname{font-size:14px;font-weight:500;color:#fff}
+.chat-hst{font-size:11px;color:#9FE1CB;display:flex;align-items:center;gap:4px}
+.qr-scroll{overflow-x:auto;padding:10px 12px 8px;display:flex;gap:6px;scrollbar-width:none}
+.qr-scroll::-webkit-scrollbar{display:none}
+.qr-chip{background:#fff;border:1px solid var(--teal-bdr);border-radius:99px;padding:6px 12px;font-size:12px;font-weight:500;color:var(--teal);white-space:nowrap;cursor:pointer;font-family:'DM Sans',sans-serif}
+.qr-chip:active{background:var(--teal-lt)}
+.chat-area{padding:14px;min-height:280px;max-height:380px;overflow-y:auto;background:#ECF0EF;scroll-behavior:smooth}
+.msg{margin-bottom:12px;animation:fadeUp .2s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.msg-time{font-size:10px;color:var(--gray);margin-bottom:3px}
+.msg-bubble{display:inline-block;max-width:85%;padding:10px 13px;border-radius:16px;font-size:13px;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+.msg-in .msg-bubble{background:#fff;border:1px solid var(--gray-bd);border-bottom-left-radius:3px}
+.msg-out{text-align:right}
+.msg-out .msg-bubble{background:#DCF8C6;border-bottom-right-radius:3px}
+.msg-ai .msg-bubble{background:var(--dark);color:#fff;border-bottom-left-radius:3px}
+.typing-wrap{padding:0 0 8px}
+.typing{display:inline-flex;gap:4px;padding:10px 14px;background:#fff;border-radius:16px;border-bottom-left-radius:3px;border:1px solid var(--gray-bd)}
+.typing span{width:7px;height:7px;border-radius:50%;background:#B0B0B0;animation:bounce .9s infinite}
+.typing span:nth-child(2){animation-delay:.2s}
+.typing span:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.chat-footer{padding:10px 12px;background:var(--gray-lt);border-top:1px solid var(--gray-bd);display:flex;gap:8px;align-items:center}
+.chat-input{flex:1;padding:10px 14px;border:1px solid var(--gray-bd);border-radius:22px;background:#fff;color:var(--dark);font-size:13px;font-family:'DM Sans',sans-serif;outline:none}
+.chat-input:focus{border-color:var(--teal)}
+.chat-send{width:40px;height:40px;border-radius:50%;background:var(--teal);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.chat-send:active{background:#0A5541}
+.pipe-wrap{overflow-x:auto;padding-bottom:8px}
+.pipe{display:flex;gap:8px;width:max-content}
+.pipe-col{width:130px}
+.pipe-head{font-size:10px;font-weight:500;color:var(--gray);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px}
+.pipe-count{background:var(--dark);color:var(--teal-mid);border-radius:99px;padding:1px 6px;font-size:10px;margin-left:4px}
+.pipe-card{background:#fff;border:1px solid var(--gray-bd);border-radius:10px;padding:10px;margin-bottom:6px;cursor:pointer;transition:all .15s}
+.pipe-card:active{border-color:var(--teal)}
+.pc-name{font-size:12px;font-weight:500;color:var(--dark)}
+.pc-prod{font-size:11px;color:var(--gray);margin-top:2px}
+.pc-val{font-size:11px;font-weight:500;color:var(--teal);margin-top:4px}
+.form-group{margin-bottom:10px}
+.form-label{font-size:11px;font-weight:500;color:var(--gray);margin-bottom:4px;display:block;text-transform:uppercase;letter-spacing:.04em}
+.form-input,.form-select{width:100%;padding:10px 12px;border:1px solid var(--gray-bd);border-radius:10px;background:var(--gray-lt);color:var(--dark);font-size:13px;font-family:'DM Sans',sans-serif;outline:none}
+.form-input:focus,.form-select:focus{border-color:var(--teal)}
+.btn{width:100%;padding:12px;border:none;border-radius:10px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer}
+.btn-primary{background:var(--teal);color:#fff}
+.btn-primary:active{background:#0A5541}
+.btn-secondary{background:transparent;color:var(--teal);border:1px solid var(--teal);margin-top:6px}
+.pedido-card{background:#fff;border:1px solid var(--gray-bd);border-radius:14px;padding:14px;margin-bottom:10px;border-left:4px solid var(--teal)}
+.pedido-card.novo{border-left-color:var(--amber)}
+.pedido-card.entregue{border-left-color:#B4B2A9;opacity:.7}
+.pedido-num{font-size:10px;color:var(--gray);margin-bottom:6px}
+.pedido-nome{font-size:15px;font-weight:500;margin-bottom:2px}
+.pedido-end{font-size:12px;color:var(--gray);margin-bottom:8px}
+.pedido-items{background:var(--gray-lt);border-radius:8px;padding:10px;margin-bottom:10px}
+.pedido-item{font-size:13px;padding:3px 0;display:flex;justify-content:space-between}
+.pedido-total{font-size:14px;font-weight:500;color:var(--teal);border-top:1px solid var(--gray-bd);padding-top:8px;margin-top:6px;display:flex;justify-content:space-between}
+.pedido-pix{background:var(--teal-lt);border-radius:8px;padding:8px 10px;font-size:12px;color:#085041;margin-bottom:10px}
+.pedido-actions{display:flex;gap:6px}
+.btn-confirmar{flex:1;padding:9px;background:var(--teal);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer}
+.btn-entregar{flex:1;padding:9px;background:var(--dark);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer}
+.badge{display:inline-flex;align-items:center;font-size:10px;font-weight:500;padding:3px 8px;border-radius:99px}
+.b-novo{background:#FAEEDA;color:#633806}
+.b-pix{background:var(--teal-lt);color:#085041}
+.b-entregue{background:#F1EFE8;color:#5F5E5A}
+.oferta-preview{background:var(--dark);border-radius:12px;padding:14px;font-size:13px;color:#E0F0EA;line-height:1.7;white-space:pre-wrap;min-height:100px;margin-bottom:10px}
+.empty{text-align:center;padding:32px 16px;color:var(--gray)}
+.empty-icon{font-size:36px;margin-bottom:8px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--dark);color:#fff;padding:10px 20px;border-radius:99px;font-size:13px;font-weight:500;transition:transform .3s;z-index:999;white-space:nowrap;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.prod-item{padding:12px 0;border-bottom:1px solid var(--gray-lt)}
+.prod-item:last-child{border-bottom:none}
+.prod-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
+.prod-nome{font-size:13px;font-weight:500}
+.prod-preco{font-size:14px;font-weight:500;color:var(--teal);white-space:nowrap;margin-left:8px}
+.prod-desc{font-size:12px;color:var(--gray);line-height:1.5}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="hdr-top">
+    <div>
+      <div class="logo">Alpro<span>limp</span></div>
+      <div class="status-row"><div class="dot"></div><span>Assistente IA ativo · Premisse Curitiba</span></div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:11px;color:#7A9A8E">8h às 20h</div>
+      <div style="font-size:10px;color:#4A6A5E;margin-top:2px" id="relogio"></div>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="trocarTab('chat',this)"><span class="tab-icon">💬</span>Chat IA</button>
+    <button class="tab" onclick="trocarTab('alan',this)"><span class="tab-icon">📦</span>Pedidos</button>
+    <button class="tab" onclick="trocarTab('crm',this)"><span class="tab-icon">👥</span>CRM</button>
+    <button class="tab" onclick="trocarTab('ofertas',this)"><span class="tab-icon">📣</span>Ofertas</button>
+    <button class="tab" onclick="trocarTab('produtos',this)"><span class="tab-icon">🛍️</span>Produtos</button>
+  </div>
+</div>
+
+<div class="content">
+
+<div id="tab-chat" class="panel active">
+  <div class="chat-wrap">
+    <div class="chat-head">
+      <div class="chat-av">🤖</div>
+      <div style="flex:1">
+        <div class="chat-hname">Assistente Alprolimp</div>
+        <div class="chat-hst"><div class="dot"></div>online agora</div>
+      </div>
+    </div>
+    <div class="qr-scroll">
+      <div class="qr-chip" onclick="enviarRapido('Qual o preço dos produtos?')">💰 Preços</div>
+      <div class="qr-chip" onclick="enviarRapido('Vocês entregam em Curitiba?')">🚚 Entrega</div>
+      <div class="qr-chip" onclick="enviarRapido('Quero fazer um pedido')">📦 Pedido</div>
+      <div class="qr-chip" onclick="enviarRapido('Como pago via PIX?')">💳 PIX</div>
+      <div class="qr-chip" onclick="enviarRapido('Me fala sobre o Kit Matizador')">✨ Matizador</div>
+    </div>
+    <div class="chat-area" id="chat-area"></div>
+    <div class="chat-footer">
+      <input class="chat-input" id="chat-in" placeholder="Escreva como um cliente..." onkeydown="if(event.key==='Enter')enviarMsg()">
+      <button class="chat-send" onclick="enviarMsg()">➤</button>
+    </div>
+  </div>
+  <div class="card" style="background:var(--teal-lt);border-color:var(--teal-bdr)">
+    <div style="font-size:12px;color:#085041;line-height:1.7">
+      ✅ A IA atende o cliente automaticamente<br>
+      ✅ Fecha o pedido coletando nome e endereço<br>
+      ✅ O pedido aparece no painel do Alan<br>
+      ✅ Alan só precisa embalar e entregar
+    </div>
+  </div>
+</div>
+
+<div id="tab-alan" class="panel">
+  <div class="metrics">
+    <div class="metric"><div class="metric-val" id="m-novos">0</div><div class="metric-lbl">novos</div></div>
+    <div class="metric"><div class="metric-val" id="m-pix">0</div><div class="metric-lbl">aguard. PIX</div></div>
+    <div class="metric"><div class="metric-val" id="m-fat">R$0</div><div class="metric-lbl">faturado</div></div>
+  </div>
+  <div id="pedidos-lista">
+    <div class="empty"><div class="empty-icon">📦</div><div style="font-size:13px;color:var(--gray)">Os pedidos aparecem aqui<br>quando a IA fechar uma venda.</div></div>
+  </div>
+</div>
+
+<div id="tab-crm" class="panel">
+  <div class="metrics">
+    <div class="metric"><div class="metric-val" id="cm-total">0</div><div class="metric-lbl">clientes</div></div>
+    <div class="metric"><div class="metric-val" id="cm-abertos">0</div><div class="metric-lbl">em aberto</div></div>
+    <div class="metric"><div class="metric-val" id="cm-fat">R$0</div><div class="metric-lbl">faturado</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Pipeline de vendas</div>
+    <div class="pipe-wrap"><div class="pipe" id="pipe-container"></div></div>
+  </div>
+  <div class="card">
+    <div class="card-title">Adicionar cliente</div>
+    <div class="form-group"><label class="form-label">Nome</label><input class="form-input" id="add-nome" placeholder="Nome do cliente"></div>
+    <div class="form-group"><label class="form-label">WhatsApp</label><input class="form-input" id="add-fone" placeholder="41 9XXXX-XXXX" type="tel"></div>
+    <div class="form-group"><label class="form-label">Produto</label>
+      <select class="form-select" id="add-prod">
+        <option value="Shampoo 1L|45">Shampoo 1L — R$ 45</option>
+        <option value="Shampoo Hidratante 1L|40">Shampoo Hidratante 1L — R$ 40</option>
+        <option value="Condicionador Hidratante 1L|40">Condicionador 1L — R$ 40</option>
+        <option value="Kit Matizador|39.90">Kit Matizador — R$ 39,90</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Bairro</label><input class="form-input" id="add-bairro" placeholder="Ex: Boqueirão, Portão..."></div>
+    <button class="btn btn-primary" onclick="addCliente()">Adicionar ao CRM</button>
+  </div>
+</div>
+
+<div id="tab-ofertas" class="panel">
+  <div class="card">
+    <div class="card-title">Gerador de mensagem diária</div>
+    <div class="form-group"><label class="form-label">Produto</label>
+      <select class="form-select" id="of-prod" onchange="gerarOferta()">
+        <option value="shampoo">Shampoo 1L</option>
+        <option value="hidratante">Shampoo Hidratante 1L</option>
+        <option value="condicionador">Condicionador Hidratante 1L</option>
+        <option value="matizador">Kit Matizador</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Tipo</label>
+      <select class="form-select" id="of-tipo" onchange="gerarOferta()">
+        <option value="oferta">🔥 Oferta do dia</option>
+        <option value="educa">💡 Dado curioso</option>
+        <option value="social">⭐ Prova social</option>
+        <option value="motiv">💪 Motivacional</option>
+      </select>
+    </div>
+    <div class="oferta-preview" id="of-preview"></div>
+    <button class="btn btn-primary" onclick="copiarOferta()">📋 Copiar mensagem</button>
+    <button class="btn btn-secondary" onclick="gerarOferta()">🔄 Gerar outra versão</button>
+  </div>
+  <div class="card">
+    <div class="card-title" style="margin-bottom:12px">Publicar hoje</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <div style="background:var(--dark);color:var(--teal-mid);border-radius:8px;padding:4px 10px;font-size:12px;font-weight:500;flex-shrink:0">8h</div>
+        <div style="font-size:12px;color:var(--gray)">WhatsApp Status + Instagram — Oferta ou produto do dia</div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <div style="background:var(--dark);color:var(--teal-mid);border-radius:8px;padding:4px 10px;font-size:12px;font-weight:500;flex-shrink:0">12h</div>
+        <div style="font-size:12px;color:var(--gray)">TikTok + Instagram — Dado curioso ou benefício</div>
+      </div>
+      <div style="display:flex;gap:12px;align-items:flex-start">
+        <div style="background:var(--dark);color:var(--teal-mid);border-radius:8px;padding:4px 10px;font-size:12px;font-weight:500;flex-shrink:0">19h</div>
+        <div style="font-size:12px;color:var(--gray)">Instagram Stories + TikTok — Prova social</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="tab-produtos" class="panel">
+  <div class="card">
+    <div class="card-title">Catálogo Alprolimp — Premisse 🇧🇷</div>
+    <div id="catalogo-lista"></div>
+  </div>
+</div>
+
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const PRODUTOS=[
+  {id:'sh1l',nome:'Shampoo 1L',preco:45,desc:'Shampoo profissional Premisse 1 litro. Hidratação intensa, anti-frizz, uso diário.'},
+  {id:'shh1l',nome:'Shampoo Hidratante 1L',preco:40,desc:'Shampoo hidratante Premisse. Ideal para cabelos ressecados e sem vida.'},
+  {id:'cdh1l',nome:'Condicionador Hidratante 1L',preco:40,desc:'Condicionador hidratante Premisse. Desembaraça, hidrata e deixa o cabelo macio.'},
+  {id:'kitmat',nome:'Kit Matizador Cabelos Platinados',preco:39.90,desc:'Kit para cabelos platinados e loiros. Neutraliza tons amarelados.'},
+];
+const ETAPAS=['Novo contato','Em conversa','Pedido feito','PIX recebido','Entregue'];
+const ETAPA_DOT=['#378ADD','#EF9F27','#1D9E75','#639922','#B4B2A9'];
+let clientes=JSON.parse(localStorage.getItem('alp_clientes')||'[]');
+let pedidos=JSON.parse(localStorage.getItem('alp_pedidos')||'[]');
+let chatHistory=[];
+let isLoading=false;
+
+const OFERTAS={
+  shampoo:{
+    oferta:`🔥 OFERTA DO DIA — Alprolimp\n\n🧴 Shampoo Premisse 1L\nHidratação intensa · Anti-frizz\n\n💰 R$ 45,00\n🚚 Entrega em toda Curitiba\n💳 Pagamento via PIX\n\n📲 Chama no WhatsApp!\n+55 41 99661-5302\n#Alprolimp #PremisseCuritiba`,
+    educa:`💡 Você sabia?\n\nO Shampoo Premisse é formulado com ingredientes de alta qualidade para hidratação profunda e controle do frizz.\n\nResultado profissional em casa! 🇧🇷\n\n💰 R$ 45 · Entrega Curitiba\n📲 +55 41 99661-5302\n#Alprolimp`,
+    social:`⭐ O que dizem nossos clientes:\n\n"Melhor shampoo que já usei. Cabelo hidratado e sem frizz desde o primeiro uso!"\n\n🇧🇷 Premisse · Qualidade brasileira\n📲 +55 41 99661-5302\n#Alprolimp #PremisseCuritiba`,
+    motiv:`💆‍♀️ Seu cabelo merece o melhor.\n\nShampoo Premisse 1L:\n✅ Qualidade brasileira\n✅ Hidratação profunda\n✅ Anti-frizz\n\n💰 R$ 45 · Curitiba 🚚\n📲 +55 41 99661-5302`
+  },
+  hidratante:{
+    oferta:`🔥 Shampoo Hidratante Premisse 1L\n\n✅ Cabelos ressecados\n✅ Hidratação intensa\n✅ Fórmula suave\n\n💰 R$ 40,00\n🚚 Entrega toda Curitiba\n📲 +55 41 99661-5302\n#Alprolimp`,
+    educa:`💧 Cabelo ressecado?\n\nO Shampoo Hidratante Premisse repõe a umidade natural dos fios, deixando o cabelo macio e com brilho real.\n\n💰 R$ 40 · Curitiba\n📲 +55 41 99661-5302`,
+    social:`⭐ Depoimento real:\n\n"Meu cabelo estava muito ressecado. Depois do Shampoo Hidratante Premisse ficou completamente diferente!"\n\n💰 R$ 40 · Entrega Curitiba\n📲 +55 41 99661-5302`,
+    motiv:`✨ Hidratação de verdade para o seu cabelo.\n\nShampoo Hidratante Premisse 1L\n— qualidade brasileira acessível.\n\n💰 R$ 40 · Curitiba 🚚\n📲 +55 41 99661-5302`
+  },
+  condicionador:{
+    oferta:`🔥 Condicionador Hidratante Premisse 1L\n\n✅ Desembaraça facilmente\n✅ Hidratação profunda\n✅ Cabelo macio e brilhoso\n\n💰 R$ 40,00\n🚚 Entrega toda Curitiba\n📲 +55 41 99661-5302`,
+    educa:`💆‍♀️ O condicionador certo faz toda a diferença!\n\nCondicionador Hidratante Premisse:\n→ Desembaraça sem esforço\n→ Hidrata do couro cabeludo às pontas\n→ Deixa o cabelo com brilho natural\n\n💰 R$ 40 · Curitiba\n📲 +55 41 99661-5302`,
+    social:`⭐ Avaliação 5 estrelas:\n\n"Nunca vi um condicionador desembaraçar tão bem. Cabelo macio o dia todo!"\n\n💰 R$ 40 · Entrega Curitiba\n📲 +55 41 99661-5302`,
+    motiv:`O segredo do cabelo bonito está no condicionador certo.\n\nCondicionador Hidratante Premisse 1L\n— qualidade que se vê e sente.\n\n💰 R$ 40 · Curitiba 🚚\n📲 +55 41 99661-5302`
+  },
+  matizador:{
+    oferta:`✨ KIT MATIZADOR PREMISSE\nEspecial para cabelos platinados e loiros!\n\n✅ Neutraliza tons amarelados\n✅ Brilho prateado intenso\n✅ Resultado profissional em casa\n\n💰 R$ 39,90\n🚚 Entrega toda Curitiba\n📲 +55 41 99661-5302`,
+    educa:`🌟 Cabelo platinado com tons amarelados?\n\nO Kit Matizador Premisse neutraliza os tons indesejados e devolve o brilho prateado ao seu cabelo.\n\nTecnologia profissional para usar em casa! ✨\n\n💰 R$ 39,90 · Curitiba\n📲 +55 41 99661-5302`,
+    social:`✨ Depoimento Kit Matizador:\n\n"Meu platinado estava ficando amarelo. O Kit Matizador Premisse resolveu em uma aplicação!"\n\n💰 R$ 39,90 · Entrega Curitiba\n📲 +55 41 99661-5302`,
+    motiv:`Cabelo platinado perfeito, sem ir ao salão!\n\nKit Matizador Premisse:\n✅ Neutraliza amarelado\n✅ Brilho intenso\n✅ Fácil aplicação\n\n💰 R$ 39,90 · Curitiba 🚚\n📲 +55 41 99661-5302`
+  }
+};
+
+function hora(){return new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}
+
+function addMsg(txt,tipo){
+  const area=document.getElementById('chat-area');
+  const div=document.createElement('div');
+  div.className=`msg msg-${tipo}`;
+  const nomes={out:'Você',ai:'Assistente Alprolimp 🤖'};
+  div.innerHTML=`<div class="msg-time">${nomes[tipo]||'Assistente'} · ${hora()}</div><div class="msg-bubble">${txt.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div>`;
+  area.appendChild(div);
+  area.scrollTop=area.scrollHeight;
+}
+
+function showTyping(){
+  const area=document.getElementById('chat-area');
+  const div=document.createElement('div');
+  div.className='msg msg-ai typing-wrap';div.id='typing';
+  div.innerHTML=`<div class="msg-time">Assistente · digitando...</div><div class="typing"><span></span><span></span><span></span></div>`;
+  area.appendChild(div);area.scrollTop=area.scrollHeight;
+}
+function hideTyping(){const t=document.getElementById('typing');if(t)t.remove()}
+
+function extrairPedido(txt){
+  const m=txt.match(/\[PEDIDO_FECHADO\|nome:([^|]+)\|endereco:([^|]+)\|itens:([^|]+)\|total:([^\]]+)\]/);
+  if(!m)return null;
+  return{nome:m[1].trim(),endereco:m[2].trim(),itens:m[3].trim(),total:m[4].trim()};
+}
+function limparTexto(txt){return txt.replace(/\[PEDIDO_FECHADO[^\]]*\]/g,'').trim()}
+
+function salvarPedido(dados){
+  const novo={
+    id:Date.now(),
+    numero:'APL-'+(pedidos.length+1).toString().padStart(3,'0'),
+    nome:dados.nome,endereco:dados.endereco,
+    itens:dados.itens,total:dados.total,
+    status:'novo',hora:hora(),
+    data:new Date().toLocaleDateString('pt-BR')
+  };
+  pedidos.unshift(novo);
+  localStorage.setItem('alp_pedidos',JSON.stringify(pedidos));
+  renderPedidos();
+  toast('Novo pedido: '+novo.nome+' 🎉');
+}
+
+async function enviarMsg(){
+  if(isLoading)return;
+  const inp=document.getElementById('chat-in');
+  const txt=inp.value.trim();
+  if(!txt)return;
+  inp.value='';isLoading=true;
+  addMsg(txt,'out');
+  chatHistory.push({role:'user',content:txt});
+  showTyping();
+  try{
+    const res=await fetch('/api/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({message:txt,history:chatHistory.slice(-10)})
+    });
+    const data=await res.json();
+    hideTyping();
+    const resposta=data.response||'Desculpe, tente novamente!';
+    const pedido=extrairPedido(resposta);
+    const textoLimpo=limparTexto(resposta);
+    addMsg(textoLimpo,'ai');
+    chatHistory.push({role:'assistant',content:textoLimpo});
+    if(pedido)salvarPedido(pedido);
+  }catch(e){
+    hideTyping();
+    addMsg('Desculpe, tive um problema de conexão. Tente novamente! 😊','ai');
+  }
+  isLoading=false;
+}
+
+function enviarRapido(txt){document.getElementById('chat-in').value=txt;enviarMsg()}
+
+function trocarTab(id,el){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  el.classList.add('active');
+  if(id==='alan')renderPedidos();
+  if(id==='crm')renderCRM();
+  if(id==='ofertas')gerarOferta();
+  if(id==='produtos')renderProdutos();
+}
+
+function renderPedidos(){
+  const lista=document.getElementById('pedidos-lista');
+  const novos=pedidos.filter(p=>p.status==='novo').length;
+  const aguard=pedidos.filter(p=>p.status==='pix').length;
+  const fat=pedidos.filter(p=>p.status==='entregue').reduce((a,p)=>{
+    const n=parseFloat(p.total.replace('R$','').replace(',','.').trim());
+    return a+(isNaN(n)?0:n);
+  },0);
+  document.getElementById('m-novos').textContent=novos;
+  document.getElementById('m-pix').textContent=aguard;
+  document.getElementById('m-fat').textContent=fat>0?'R$'+fat.toFixed(0):'R$0';
+  if(!pedidos.length){
+    lista.innerHTML=`<div class="empty"><div class="empty-icon">📦</div><div style="font-size:13px;color:var(--gray)">Os pedidos aparecem aqui<br>quando a IA fechar uma venda.</div></div>`;
+    return;
+  }
+  const statusLabel={novo:'Novo pedido',pix:'PIX recebido',entregue:'Entregue ✅'};
+  const badgeClass={novo:'b-novo',pix:'b-pix',entregue:'b-entregue'};
+  lista.innerHTML=pedidos.map((p,i)=>{
+    const b1=p.status==='novo'?`<button class="btn-confirmar" onclick="atualizarPedido(${i},'pix')">✅ PIX Recebido</button>`:'';
+    const b2=p.status==='pix'?`<button class="btn-entregar" onclick="atualizarPedido(${i},'entregue')">🚚 Entregue</button>`:'';
+    return`<div class="pedido-card ${p.status==='novo'?'novo':p.status==='entregue'?'entregue':''}">
+      <div class="pedido-num">${p.numero} · ${p.data} às ${p.hora} <span class="badge ${badgeClass[p.status]||'b-novo'}">${statusLabel[p.status]||'Novo'}</span></div>
+      <div class="pedido-nome">${p.nome}</div>
+      <div class="pedido-end">📍 ${p.endereco}</div>
+      <div class="pedido-items"><div class="pedido-item"><span>📦 ${p.itens}</span></div><div class="pedido-total"><span>Total</span><span>${p.total}</span></div></div>
+      ${p.status!=='entregue'?`<div class="pedido-pix"><strong>Chave PIX:</strong> 41996615302 (Alan)</div>`:''}
+      ${b1||b2?`<div class="pedido-actions">${b1}${b2}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function atualizarPedido(i,status){
+  pedidos[i].status=status;
+  localStorage.setItem('alp_pedidos',JSON.stringify(pedidos));
+  renderPedidos();
+  toast(status==='pix'?'PIX confirmado!':'Pedido entregue!');
+}
+
+function salvar(){localStorage.setItem('alp_clientes',JSON.stringify(clientes))}
+
+function addCliente(){
+  const nome=document.getElementById('add-nome').value.trim();
+  if(!nome){toast('Digite o nome');return}
+  const fone=document.getElementById('add-fone').value.trim();
+  const prodRaw=document.getElementById('add-prod').value;
+  const bairro=document.getElementById('add-bairro').value.trim();
+  const[prod,val]=prodRaw.split('|');
+  clientes.push({id:Date.now(),nome,fone,prod,valor:parseFloat(val),bairro:bairro||'Curitiba',etapa:0,data:new Date().toLocaleDateString('pt-BR')});
+  salvar();
+  document.getElementById('add-nome').value='';
+  document.getElementById('add-fone').value='';
+  document.getElementById('add-bairro').value='';
+  renderCRM();
+  toast('Cliente adicionado!');
+}
+
+function renderCRM(){
+  const total=clientes.length;
+  const abertos=clientes.filter(c=>c.etapa<4).length;
+  const fat=clientes.filter(c=>c.etapa>=3).reduce((a,c)=>a+c.valor,0);
+  document.getElementById('cm-total').textContent=total;
+  document.getElementById('cm-abertos').textContent=abertos;
+  document.getElementById('cm-fat').textContent=fat>0?'R$'+fat.toFixed(0):'R$0';
+  const pipe=document.getElementById('pipe-container');
+  pipe.innerHTML='';
+  ETAPAS.forEach((et,ei)=>{
+    const col=document.createElement('div');
+    col.className='pipe-col';
+    const grupo=clientes.filter(c=>c.etapa===ei);
+    col.innerHTML=`<div class="pipe-head">${et}<span class="pipe-count">${grupo.length}</span></div>`;
+    grupo.forEach((cl,gi)=>{
+      const idx=clientes.indexOf(cl);
+      const card=document.createElement('div');
+      card.className='pipe-card';
+      card.style.borderLeft=`3px solid ${ETAPA_DOT[ei]}`;
+      card.innerHTML=`<div class="pc-name">${cl.nome}</div><div class="pc-prod">${cl.prod}</div><div class="pc-val">R$ ${cl.valor}</div>`;
+      if(cl.etapa<4)card.onclick=()=>{cl.etapa++;salvar();renderCRM();toast(cl.nome+' → '+ETAPAS[cl.etapa])};
+      col.appendChild(card);
+    });
+    pipe.appendChild(col);
+  });
+}
+
+function gerarOferta(){
+  const prod=document.getElementById('of-prod').value;
+  const tipo=document.getElementById('of-tipo').value;
+  document.getElementById('of-preview').textContent=OFERTAS[prod]?.[tipo]||'';
+}
+
+function copiarOferta(){
+  const txt=document.getElementById('of-preview').textContent;
+  navigator.clipboard.writeText(txt).then(()=>toast('Mensagem copiada!')).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('Copiada!');
+  });
+}
+
+function renderProdutos(){
+  document.getElementById('catalogo-lista').innerHTML=PRODUTOS.map(p=>`
+    <div class="prod-item">
+      <div class="prod-row"><div class="prod-nome">${p.nome}</div><div class="prod-preco">R$ ${p.preco.toFixed(2).replace('.',',')}</div></div>
+      <div class="prod-desc">${p.desc}</div>
+    </div>`).join('');
+}
+
+function toast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+function relogio(){const el=document.getElementById('relogio');if(el)el.textContent=hora()}
+relogio();setInterval(relogio,30000);
+renderProdutos();renderCRM();renderPedidos();gerarOferta();
+
+setTimeout(()=>{
+  addMsg('Olá! 👋 Bem-vindo à Alprolimp — cosméticos Premisse em Curitiba! 🇧🇷\n\nSou sua assistente virtual. Posso te ajudar com:\n🧴 Produtos e preços\n🚚 Entrega em toda Curitiba\n📦 Fazer pedidos\n💳 Pagamento via PIX\n\nComo posso te ajudar hoje?','ai');
+},400);
+</script>
+
+</body>
+</html>

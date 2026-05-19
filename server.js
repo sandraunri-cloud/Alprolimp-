@@ -3,22 +3,129 @@ const cors = require('cors');
 const fetch = require('node-fetch');
 const path = require('path');
 
-
 const app = express();
 const PORT = process.env.PORT || 3000;
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_KEY = process.env.SUPABASE_KEY;
 
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const PRODUTOS = [
-  {nome:'Shampoo 1L', preco:45.00, desc:'Shampoo profissional Premisse 1 litro.'},
-  {nome:'Shampoo Hidratante 1L', preco:40.00, desc:'Shampoo hidratante Premisse.'},
-  {nome:'Condicionador Hidratante 1L', preco:40.00, desc:'Condicionador hidratante Premisse.'},
-  {nome:'Kit Matizador', preco:39.90, desc:'Kit para cabelos platinados e loiros.'},
-];
+// ============ SUPABASE HELPER ============
+async function supabase(table, method, body = null, query = '') {
+  const url = `${SUPABASE_URL}/rest/v1/${table}${query}`;
+  const options = {
+    method,
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation'
+    }
+  };
+  if (body) options.body = JSON.stringify(body);
+  const res = await fetch(url, options);
+  if (!res.ok) {
+    const err = await res.text();
+    console.error('Supabase error:', err);
+    throw new Error(err);
+  }
+  return res.json();
+}
 
-const SYSTEM = `Você é a assistente virtual da Alprolimp, distribuidora Premisse Cosméticos em Curitiba-PR.
+// ============ API PRODUTOS ============
+app.get('/api/produtos', async (req, res) => {
+  try {
+    const data = await supabase('produtos', 'GET', null, '?ativo=eq.true&order=id.asc');
+    res.json(data);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/produtos', async (req, res) => {
+  try {
+    const data = await supabase('produtos', 'POST', req.body);
+    res.json(data);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.patch('/api/produtos/:id', async (req, res) => {
+  try {
+    const data = await supabase('produtos', 'PATCH', req.body, `?id=eq.${req.params.id}`);
+    res.json(data);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.delete('/api/produtos/:id', async (req, res) => {
+  try {
+    await supabase('produtos', 'DELETE', null, `?id=eq.${req.params.id}`);
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// ============ API CLIENTES ============
+app.get('/api/clientes', async (req, res) => {
+  try {
+    const data = await supabase('clientes', 'GET', null, '?order=created_at.desc');
+    res.json(data);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/clientes', async (req, res) => {
+  try {
+    const data = await supabase('clientes', 'POST', req.body);
+    res.json(data);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.patch('/api/clientes/:id', async (req, res) => {
+  try {
+    const data = await supabase('clientes', 'PATCH', req.body, `?id=eq.${req.params.id}`);
+    res.json(data);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.delete('/api/clientes/:id', async (req, res) => {
+  try {
+    await supabase('clientes', 'DELETE', null, `?id=eq.${req.params.id}`);
+    res.json({ ok: true });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// ============ API PEDIDOS ============
+app.get('/api/pedidos', async (req, res) => {
+  try {
+    const data = await supabase('pedidos', 'GET', null, '?order=created_at.desc');
+    res.json(data);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.post('/api/pedidos', async (req, res) => {
+  try {
+    const data = await supabase('pedidos', 'POST', req.body);
+    res.json(data);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+app.patch('/api/pedidos/:id', async (req, res) => {
+  try {
+    const data = await supabase('pedidos', 'PATCH', req.body, `?id=eq.${req.params.id}`);
+    res.json(data);
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// ============ CHAT IA ============
+app.post('/api/chat', async (req, res) => {
+  try {
+    const { messages, message, history } = req.body;
+
+    // Buscar produtos atuais
+    const produtos = await supabase('produtos', 'GET', null, '?ativo=eq.true&order=id.asc');
+    const produtosStr = produtos.map(p =>
+      `- ${p.nome}: R$ ${parseFloat(p.preco).toFixed(2).replace('.',',')}`
+    ).join('\n');
+
+    const SYSTEM = `Você é a assistente virtual da Alprolimp, distribuidora Premisse Cosméticos em Curitiba-PR.
 
 NEGÓCIO:
 - WhatsApp: +55 41 99661-5302
@@ -27,22 +134,15 @@ NEGÓCIO:
 - Entrega: toda Curitiba em até 24h
 
 PRODUTOS:
-- Shampoo 1L: R$ 45,00
-- Shampoo Hidratante 1L: R$ 40,00
-- Condicionador Hidratante 1L: R$ 40,00
-- Kit Matizador: R$ 39,90
+${produtosStr}
 
 INSTRUÇÕES:
 1. Responda SEMPRE em português brasileiro
-2. Seja amigável e profissional
+2. Seja MUITO concisa — máximo 3 linhas por resposta
 3. Para pedido colete: produto + quantidade + nome + endereço + bairro
 4. Após confirmação informe PIX: 41996615302
 5. Quando pedido COMPLETO e CONFIRMADO inclua ao final:
 [PEDIDO_FECHADO|nome:NOME|endereco:ENDERECO|itens:ITENS|total:TOTAL]`;
-
-app.post('/api/chat', async (req, res) => {
-  try {
-    const { messages, message, history } = req.body;
 
     let msgs = [];
     if (messages && Array.isArray(messages)) {

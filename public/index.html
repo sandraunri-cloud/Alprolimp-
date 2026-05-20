@@ -1,177 +1,130 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Alprolimp — Premisse Cosméticos</title>
-  <style>
-    :root {
-      --primary: #7c3aed;
-      --primary-light: #ede9fe;
-      --primary-dark: #5b21b6;
-      --accent: #f472b6;
-      --green: #16a34a;
-      --green-light: #dcfce7;
-      --red: #dc2626;
-      --orange: #ea580c;
-      --orange-light: #fff7ed;
-      --bg: #f8f7ff;
-      --card: #ffffff;
-      --border: #e5e7eb;
-      --text: #1f2937;
-      --muted: #6b7280;
-      --radius: 12px;
-      --shadow: 0 2px 12px rgba(124,58,237,0.08);
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-    header { background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 60%, var(--accent) 100%); color: #fff; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 16px rgba(124,58,237,0.3); }
-    .brand { display: flex; align-items: center; gap: 12px; }
-    .brand-logo { width: 44px; height: 44px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; }
-    .brand-name { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.5px; }
-    .brand-sub { font-size: 0.75rem; opacity: 0.85; }
-    .header-info { text-align: right; font-size: 0.8rem; opacity: 0.9; line-height: 1.6; }
-    .header-info a { color: #fff; text-decoration: none; }
-    nav { background: var(--card); border-bottom: 1px solid var(--border); display: flex; overflow-x: auto; padding: 0 16px; gap: 4px; }
-    nav button { flex-shrink: 0; padding: 14px 20px; border: none; background: transparent; color: var(--muted); font-size: 0.88rem; font-weight: 500; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; white-space: nowrap; }
-    nav button.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 700; }
-    nav button:hover:not(.active) { color: var(--text); }
-    main { max-width: 1100px; margin: 0 auto; padding: 24px 16px; }
-    .tab-panel { display: none; }
-    .tab-panel.active { display: block; }
-    .card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); }
-    .card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); font-weight: 700; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
-    .card-body { padding: 20px; }
-    #panel-chat { display: none; }
-    #panel-chat.active { display: flex; flex-direction: column; gap: 16px; }
-    .chat-container { display: flex; flex-direction: column; height: 520px; }
-    .chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; background: #faf9ff; border-radius: var(--radius) var(--radius) 0 0; }
-    .msg { max-width: 78%; display: flex; flex-direction: column; gap: 4px; }
-    .msg.user { align-self: flex-end; align-items: flex-end; }
-    .msg.bot { align-self: flex-start; align-items: flex-start; }
-    .msg-bubble { padding: 10px 14px; border-radius: 18px; font-size: 0.9rem; line-height: 1.55; white-space: pre-wrap; }
-    .msg.user .msg-bubble { background: var(--primary); color: #fff; border-bottom-right-radius: 4px; }
-    .msg.bot .msg-bubble { background: #fff; color: var(--text); border: 1px solid var(--border); border-bottom-left-radius: 4px; }
-    .msg-time { font-size: 0.7rem; color: var(--muted); padding: 0 4px; }
-    .chat-input-row { display: flex; gap: 8px; padding: 12px 16px; border-top: 1px solid var(--border); background: var(--card); border-radius: 0 0 var(--radius) var(--radius); }
-    .chat-input-row input { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: 24px; font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
-    .chat-input-row input:focus { border-color: var(--primary); }
-    .chat-input-row button { padding: 10px 20px; background: var(--primary); color: #fff; border: none; border-radius: 24px; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
-    .chat-input-row button:hover { background: var(--primary-dark); }
-    .chat-input-row button:disabled { background: var(--muted); cursor: not-allowed; }
-    .typing { display: flex; align-items: center; gap: 4px; padding: 10px 14px; background: #fff; border: 1px solid var(--border); border-radius: 18px; border-bottom-left-radius: 4px; }
-    .dot { width: 7px; height: 7px; background: var(--muted); border-radius: 50%; animation: bounce 1.2s infinite; }
-    .dot:nth-child(2) { animation-delay: 0.2s; }
-    .dot:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes bounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
-    .chat-products { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
-    .prod-card { border: 1px solid var(--border); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 6px; background: #faf9ff; }
-    .prod-name { font-weight: 600; font-size: 0.88rem; }
-    .prod-price { color: var(--primary); font-weight: 800; font-size: 1.1rem; }
-    .prod-btn { margin-top: 4px; padding: 7px; background: var(--primary-light); color: var(--primary-dark); border: none; border-radius: 8px; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
-    .prod-btn:hover { background: var(--primary); color: #fff; }
-    .pipeline { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; }
-    .pipeline-col { flex: 0 0 200px; display: flex; flex-direction: column; gap: 8px; }
-    .pipeline-col-header { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 8px 12px; border-radius: 8px; text-align: center; }
-    .col-lead .pipeline-col-header { background: #dbeafe; color: #1d4ed8; }
-    .col-contato .pipeline-col-header { background: #fef9c3; color: #854d0e; }
-    .col-proposta .pipeline-col-header { background: var(--orange-light); color: var(--orange); }
-    .col-fechado .pipeline-col-header { background: var(--green-light); color: var(--green); }
-    .col-perdido .pipeline-col-header { background: #fee2e2; color: var(--red); }
-    .crm-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px; font-size: 0.83rem; cursor: grab; transition: box-shadow 0.2s; box-shadow: var(--shadow); }
-    .crm-card.dragging { opacity: 0.4; }
-    .crm-card-name { font-weight: 700; margin-bottom: 4px; }
-    .crm-card-detail { color: var(--muted); margin-bottom: 2px; }
-    .crm-card-value { color: var(--green); font-weight: 700; font-size: 0.9rem; }
-    .crm-card-actions { display: flex; gap: 4px; margin-top: 8px; }
-    .crm-card-actions button { flex: 1; padding: 4px; border: none; border-radius: 6px; font-size: 0.72rem; cursor: pointer; font-weight: 600; }
-    .btn-edit { background: var(--primary-light); color: var(--primary-dark); }
-    .btn-del { background: #fee2e2; color: var(--red); }
-    .drop-zone { min-height: 60px; border: 2px dashed transparent; border-radius: 8px; transition: border-color 0.2s; }
-    .drop-zone.drag-over { border-color: var(--primary); background: var(--primary-light); }
-    .add-crm-btn { width: 100%; padding: 8px; border: 1px dashed var(--border); background: transparent; border-radius: 8px; color: var(--muted); font-size: 0.8rem; cursor: pointer; transition: all 0.2s; }
-    .add-crm-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
-    .crm-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
-    .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; text-align: center; }
-    .stat-num { font-size: 1.6rem; font-weight: 800; color: var(--primary); }
-    .stat-label { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
-    .offers-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-bottom: 20px; }
-    .offer-card { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow); }
-    .offer-banner { height: 80px; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
-    .offer-body { padding: 16px; }
-    .offer-title { font-weight: 800; font-size: 1rem; margin-bottom: 4px; }
-    .offer-desc { font-size: 0.83rem; color: var(--muted); margin-bottom: 10px; }
-    .offer-price { font-size: 1.3rem; font-weight: 800; color: var(--primary); }
-    .offer-original { font-size: 0.8rem; color: var(--muted); text-decoration: line-through; }
-    .offer-badge { display: inline-block; background: var(--accent); color: #fff; font-size: 0.72rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; margin-bottom: 8px; }
-    .offer-share { width: 100%; margin-top: 10px; padding: 8px; background: #25d366; color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer; }
-    .offer-gen-btn { padding: 12px 28px; background: var(--primary); color: #fff; border: none; border-radius: 10px; font-size: 0.95rem; font-weight: 700; cursor: pointer; }
-    .offer-controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 20px; padding: 16px; background: var(--card); border-radius: var(--radius); border: 1px solid var(--border); }
-    .offer-controls label { font-size: 0.85rem; font-weight: 600; }
-    .offer-controls input[type=number] { width: 80px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.9rem; }
-    .offer-controls select { padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.9rem; }
-    .order-layout { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
-    @media (max-width: 768px) { .order-layout { grid-template-columns: 1fr; } }
-    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
-    .order-prod-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 8px; box-shadow: var(--shadow); }
-    .order-prod-name { font-weight: 700; font-size: 0.92rem; }
-    .order-prod-price { color: var(--primary); font-weight: 800; font-size: 1.2rem; }
-    .qty-row { display: flex; align-items: center; gap: 8px; }
-    .qty-btn { width: 30px; height: 30px; border: 1px solid var(--border); background: var(--bg); border-radius: 8px; font-size: 1rem; cursor: pointer; font-weight: 700; display: flex; align-items: center; justify-content: center; }
-    .qty-btn:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
-    .qty-num { width: 32px; text-align: center; font-weight: 700; font-size: 1rem; }
-    .add-item-btn { padding: 8px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer; }
-    .cart-card { position: sticky; top: 20px; }
-    .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.87rem; }
-    .cart-item-name { font-weight: 500; }
-    .cart-item-right { display: flex; align-items: center; gap: 8px; }
-    .cart-item-price { font-weight: 700; color: var(--primary); }
-    .cart-remove { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; padding: 2px 6px; border-radius: 4px; }
-    .cart-remove:hover { color: var(--red); }
-    .cart-total { display: flex; justify-content: space-between; font-weight: 800; font-size: 1.05rem; padding-top: 12px; margin-top: 4px; border-top: 2px solid var(--primary); }
-    .cart-total-val { color: var(--primary); }
-    .customer-form { margin-top: 16px; display: flex; flex-direction: column; gap: 10px; }
-    .customer-form input, .customer-form textarea, .customer-form select { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.88rem; font-family: inherit; outline: none; resize: none; }
-    .customer-form input:focus, .customer-form textarea:focus { border-color: var(--primary); }
-    .customer-form label { font-size: 0.8rem; font-weight: 600; color: var(--muted); margin-bottom: 2px; display: block; }
-    .field-group { display: flex; flex-direction: column; }
-    .whatsapp-btn { width: 100%; padding: 12px; background: #25d366; color: #fff; border: none; border-radius: 10px; font-weight: 700; font-size: 0.95rem; cursor: pointer; margin-top: 4px; }
-    .pix-btn { width: 100%; padding: 12px; background: var(--primary); color: #fff; border: none; border-radius: 10px; font-weight: 700; font-size: 0.95rem; cursor: pointer; margin-top: 8px; }
-    .empty-cart { text-align: center; color: var(--muted); padding: 24px 0; font-size: 0.88rem; }
-    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 100; align-items: center; justify-content: center; }
-    .modal-overlay.open { display: flex; }
-    .modal { background: var(--card); border-radius: var(--radius); padding: 24px; width: 90%; max-width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
-    .modal-title { font-weight: 800; font-size: 1.05rem; margin-bottom: 16px; color: var(--primary); }
-    .modal-form { display: flex; flex-direction: column; gap: 10px; }
-    .modal-form input, .modal-form select { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.88rem; outline: none; }
-    .modal-form input:focus { border-color: var(--primary); }
-    .modal-actions { display: flex; gap: 8px; margin-top: 8px; }
-    .modal-actions button { flex: 1; padding: 10px; border: none; border-radius: 8px; font-weight: 700; font-size: 0.88rem; cursor: pointer; }
-    .btn-save { background: var(--primary); color: #fff; }
-    .btn-cancel { background: var(--border); color: var(--text); }
-    .pix-copy { display: flex; align-items: center; gap: 8px; background: var(--primary-light); padding: 10px 14px; border-radius: 8px; font-family: monospace; font-size: 0.9rem; margin-bottom: 8px; }
-    .pix-copy button { padding: 4px 10px; border: 1px solid var(--primary); border-radius: 6px; background: #fff; color: var(--primary); font-size: 0.78rem; font-weight: 700; cursor: pointer; }
-    .section-title { font-size: 1.1rem; font-weight: 800; color: var(--primary-dark); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-    .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; }
-    .mt { margin-top: 16px; }
-    /* PEDIDOS ALAN */
-    .pedidos-list { display: flex; flex-direction: column; gap: 12px; }
-    .pedido-item { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; border-left: 4px solid var(--primary); }
-    .pedido-item.novo { border-left-color: var(--orange); }
-    .pedido-item.entregue { border-left-color: var(--green); opacity: 0.75; }
-    .pedido-num { font-size: 0.75rem; color: var(--muted); margin-bottom: 6px; }
-    .pedido-nome { font-size: 1rem; font-weight: 700; margin-bottom: 2px; }
-    .pedido-end { font-size: 0.85rem; color: var(--muted); margin-bottom: 8px; }
-    .pedido-itens { background: var(--bg); border-radius: 8px; padding: 10px; margin-bottom: 8px; font-size: 0.85rem; }
-    .pedido-total { font-weight: 800; color: var(--primary); font-size: 0.95rem; margin-top: 4px; }
-    .pedido-pix { background: var(--green-light); border-radius: 8px; padding: 8px 10px; font-size: 0.82rem; color: var(--green); margin-bottom: 8px; }
-    .pedido-actions { display: flex; gap: 8px; }
-    .pedido-actions button { flex: 1; padding: 8px; border: none; border-radius: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer; }
-    .btn-pix { background: var(--green-light); color: var(--green); }
-    .btn-entregar { background: var(--primary); color: #fff; }
-    .empty-state { text-align: center; padding: 40px; color: var(--muted); }
-    .empty-state div { font-size: 3rem; margin-bottom: 12px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alprolimp — Premisse Cosméticos</title>
+<style>
+:root{--primary:#7c3aed;--primary-light:#ede9fe;--primary-dark:#5b21b6;--accent:#f472b6;--green:#16a34a;--green-light:#dcfce7;--red:#dc2626;--orange:#ea580c;--bg:#f8f7ff;--card:#fff;--border:#e5e7eb;--text:#1f2937;--muted:#6b7280;--radius:12px;--shadow:0 2px 12px rgba(124,58,237,.08)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+header{background:linear-gradient(135deg,var(--primary-dark) 0%,var(--primary) 60%,var(--accent) 100%);color:#fff;padding:16px 24px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-logo{width:44px;height:44px;background:rgba(255,255,255,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px}
+.brand-name{font-size:1.4rem;font-weight:800}
+.brand-sub{font-size:.75rem;opacity:.85}
+.header-info{text-align:right;font-size:.8rem;line-height:1.6}
+.header-info a{color:#fff;text-decoration:none}
+nav{background:var(--card);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;padding:0 16px;gap:4px}
+nav button{flex-shrink:0;padding:14px 20px;border:none;background:transparent;color:var(--muted);font-size:.88rem;font-weight:500;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+nav button.active{color:var(--primary);border-bottom-color:var(--primary);font-weight:700}
+main{max-width:1100px;margin:0 auto;padding:24px 16px}
+.tab-panel{display:none}.tab-panel.active{display:block}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);border:1px solid var(--border)}
+.card-header{padding:16px 20px;border-bottom:1px solid var(--border);font-weight:700;display:flex;align-items:center;gap:8px}
+.card-body{padding:20px}
+.section-title{font-size:1.1rem;font-weight:800;color:var(--primary-dark);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.section-actions{display:flex;justify-content:flex-end;margin-bottom:12px;gap:8px}
+.btn{padding:10px 20px;border:none;border-radius:10px;font-weight:700;cursor:pointer;font-size:.88rem;font-family:inherit}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-secondary{background:var(--border);color:var(--text)}
+.btn-danger{background:#fee2e2;color:var(--red)}
+.btn-success{background:var(--green);color:#fff}
+.loading{text-align:center;padding:40px;color:var(--muted)}
+/* CHAT */
+#panel-chat.active{display:flex;flex-direction:column;gap:16px}
+.chat-container{display:flex;flex-direction:column;height:520px}
+.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;background:#faf9ff;border-radius:var(--radius) var(--radius) 0 0}
+.msg{max-width:78%;display:flex;flex-direction:column;gap:4px}
+.msg.user{align-self:flex-end;align-items:flex-end}
+.msg.bot{align-self:flex-start}
+.msg-bubble{padding:10px 14px;border-radius:18px;font-size:.9rem;line-height:1.55;white-space:pre-wrap}
+.msg.user .msg-bubble{background:var(--primary);color:#fff;border-bottom-right-radius:4px}
+.msg.bot .msg-bubble{background:#fff;border:1px solid var(--border);border-bottom-left-radius:4px}
+.msg-time{font-size:.7rem;color:var(--muted);padding:0 4px}
+.chat-input-row{display:flex;gap:8px;padding:12px 16px;border-top:1px solid var(--border);background:var(--card);border-radius:0 0 var(--radius) var(--radius)}
+.chat-input-row input{flex:1;padding:10px 14px;border:1px solid var(--border);border-radius:24px;font-size:.9rem;outline:none}
+.chat-input-row input:focus{border-color:var(--primary)}
+.chat-input-row button{padding:10px 20px;background:var(--primary);color:#fff;border:none;border-radius:24px;font-weight:600;cursor:pointer}
+.typing{display:flex;gap:4px;padding:10px 14px;background:#fff;border:1px solid var(--border);border-radius:18px;border-bottom-left-radius:4px}
+.dot{width:7px;height:7px;background:var(--muted);border-radius:50%;animation:bounce 1.2s infinite}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+/* PEDIDOS */
+.pedidos-list{display:flex;flex-direction:column;gap:12px}
+.pedido-item{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;border-left:4px solid var(--primary)}
+.pedido-item.novo{border-left-color:var(--orange)}
+.pedido-item.entregue{border-left-color:var(--green);opacity:.75}
+.pedido-num{font-size:.75rem;color:var(--muted);margin-bottom:6px}
+.pedido-nome{font-size:1rem;font-weight:700}
+.pedido-end{font-size:.85rem;color:var(--muted);margin:4px 0 8px}
+.pedido-itens{background:var(--bg);border-radius:8px;padding:10px;margin-bottom:8px;font-size:.85rem}
+.pedido-total{font-weight:800;color:var(--primary);font-size:.95rem;margin-top:4px}
+.pedido-pix{background:var(--green-light);border-radius:8px;padding:8px 10px;font-size:.82rem;color:var(--green);margin-bottom:8px}
+.pedido-actions{display:flex;gap:8px}
+.pedido-actions button{flex:1;padding:8px;border:none;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:inherit}
+/* CRM */
+.pipeline{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px}
+.pipeline-col{flex:0 0 200px;display:flex;flex-direction:column;gap:8px}
+.pipeline-col-header{font-size:.8rem;font-weight:700;text-transform:uppercase;padding:8px 12px;border-radius:8px;text-align:center}
+.col-0 .pipeline-col-header{background:#dbeafe;color:#1d4ed8}
+.col-1 .pipeline-col-header{background:#fef9c3;color:#854d0e}
+.col-2 .pipeline-col-header{background:#fff7ed;color:var(--orange)}
+.col-3 .pipeline-col-header{background:var(--green-light);color:var(--green)}
+.col-4 .pipeline-col-header{background:#fee2e2;color:var(--red)}
+.crm-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px;font-size:.83rem;cursor:grab;box-shadow:var(--shadow)}
+.crm-card-name{font-weight:700;margin-bottom:4px}
+.crm-card-detail{color:var(--muted);margin-bottom:2px}
+.crm-card-value{color:var(--green);font-weight:700;margin-top:4px}
+.crm-card-actions{display:flex;gap:4px;margin-top:8px}
+.crm-card-actions button{flex:1;padding:4px;border:none;border-radius:6px;font-size:.72rem;cursor:pointer;font-weight:600;font-family:inherit}
+.btn-edit{background:var(--primary-light);color:var(--primary-dark)}
+.btn-del{background:#fee2e2;color:var(--red)}
+.drop-zone{min-height:60px;border:2px dashed transparent;border-radius:8px}
+.drop-zone.drag-over{border-color:var(--primary);background:var(--primary-light)}
+.crm-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.stat-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+.stat-num{font-size:1.6rem;font-weight:800;color:var(--primary)}
+.stat-label{font-size:.75rem;color:var(--muted);margin-top:2px}
+/* PRODUTOS */
+.produtos-list{display:flex;flex-direction:column;gap:10px}
+.produto-row{background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px;display:flex;align-items:center;gap:12px}
+.produto-row.inativo{opacity:.5}
+.produto-info{flex:1}
+.produto-nome{font-weight:700;font-size:.95rem}
+.produto-desc{font-size:.78rem;color:var(--muted);margin-top:2px}
+.produto-preco{font-size:1.1rem;font-weight:800;color:var(--primary);white-space:nowrap}
+.produto-actions{display:flex;gap:6px}
+.produto-actions button{padding:6px 10px;border:none;border-radius:6px;font-size:.75rem;cursor:pointer;font-weight:600;font-family:inherit}
+/* OFFERS */
+.offers-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+.offer-card{border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);box-shadow:var(--shadow)}
+.offer-banner{height:80px;display:flex;align-items:center;justify-content:center;font-size:2rem}
+.offer-body{padding:16px}
+.offer-title{font-weight:800;margin-bottom:4px}
+.offer-desc{font-size:.83rem;color:var(--muted);margin-bottom:10px}
+.offer-price{font-size:1.3rem;font-weight:800;color:var(--primary)}
+.offer-original{font-size:.8rem;color:var(--muted);text-decoration:line-through}
+.offer-badge{display:inline-block;background:var(--accent);color:#fff;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:20px;margin-bottom:8px}
+.offer-share{width:100%;margin-top:10px;padding:8px;background:#25d366;color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer}
+.offer-controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:20px;padding:16px;background:#fff;border-radius:var(--radius);border:1px solid var(--border)}
+.offer-controls label{font-size:.85rem;font-weight:600}
+.offer-controls input[type=number],.offer-controls select{padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:.9rem;font-family:inherit}
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:var(--radius);padding:24px;width:90%;max-width:420px;max-height:90vh;overflow-y:auto}
+.modal-title{font-weight:800;font-size:1.05rem;margin-bottom:16px;color:var(--primary)}
+.modal-form{display:flex;flex-direction:column;gap:10px}
+.modal-form input,.modal-form select,.modal-form textarea{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-size:.88rem;outline:none;font-family:inherit;resize:none}
+.modal-form input:focus,.modal-form textarea:focus{border-color:var(--primary)}
+.modal-actions{display:flex;gap:8px;margin-top:8px}
+.modal-actions button{flex:1;padding:10px;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-family:inherit}
+.empty-state{text-align:center;padding:40px;color:var(--muted)}
+.empty-state div{font-size:3rem;margin-bottom:12px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);background:var(--text);color:#fff;padding:10px 20px;border-radius:99px;font-size:.88rem;font-weight:600;transition:transform .3s;z-index:999;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+</style>
 </head>
 <body>
 
@@ -180,504 +133,295 @@
     <div class="brand-logo">💜</div>
     <div>
       <div class="brand-name">Alprolimp</div>
-      <div class="brand-sub">Distribuidora Premisse Cosméticos · Curitiba</div>
+      <div class="brand-sub">Distribuidora Premisse · Curitiba</div>
     </div>
   </div>
   <div class="header-info">
     <div>📱 <a href="https://wa.me/5541996615302">+55 41 99661-5302</a></div>
-    <div>🕐 8h às 20h · Entrega em toda Curitiba</div>
-    <div>PIX: 41996615302</div>
+    <div>🕐 8h às 20h · PIX: 41996615302</div>
   </div>
 </header>
 
 <nav>
-  <button class="active" onclick="switchTab('chat')">💬 Assistente Virtual</button>
-  <button onclick="switchTab('alan')">📦 Painel de Pedidos</button>
-  <button onclick="switchTab('crm')">📊 CRM Pipeline</button>
-  <button onclick="switchTab('offers')">🏷️ Ofertas do Dia</button>
-  <button onclick="switchTab('orders')">🛒 Fazer Pedido</button>
+  <button class="active" onclick="switchTab('chat',this)">💬 Chat IA</button>
+  <button onclick="switchTab('alan',this)">📦 Pedidos</button>
+  <button onclick="switchTab('crm',this)">📊 CRM</button>
+  <button onclick="switchTab('produtos',this)">🛍️ Produtos</button>
+  <button onclick="switchTab('offers',this)">🏷️ Ofertas</button>
 </nav>
 
 <main>
 
-  <!-- CHAT -->
-  <div id="panel-chat" class="tab-panel active">
-    <div class="section-title">💬 Assistente Virtual — Alprolimp</div>
-    <div class="card chat-container">
-      <div class="chat-messages" id="chatMessages">
-        <div class="msg bot">
-          <div class="msg-bubble">Olá! 👋 Sou a assistente virtual da <strong>Alprolimp</strong>, distribuidora Premisse Cosméticos em Curitiba!<br><br>Posso te ajudar com informações sobre produtos, preços, formas de pagamento e muito mais. Como posso te ajudar hoje? 😊</div>
-          <div class="msg-time">agora</div>
-        </div>
-      </div>
-      <div class="chat-input-row">
-        <input type="text" id="chatInput" placeholder="Digite sua mensagem..." onkeydown="if(event.key==='Enter') sendChat()" />
-        <button id="chatSendBtn" onclick="sendChat()">Enviar</button>
-      </div>
+<div id="panel-chat" class="tab-panel active">
+  <div class="section-title">💬 Assistente Virtual</div>
+  <div class="card chat-container">
+    <div class="chat-messages" id="chatMessages">
+      <div class="msg bot"><div class="msg-bubble">Olá! 👋 Sou a assistente Alprolimp. Como posso ajudar?</div><div class="msg-time">agora</div></div>
     </div>
-    <div class="section-title mt">🧴 Nossos Produtos</div>
-    <div class="chat-products">
-      <div class="prod-card"><div class="prod-name">🧴 Shampoo 1L</div><div class="prod-price">R$ 45,00</div><button class="prod-btn" onclick="askAbout('Shampoo 1L por R$ 45,00')">Perguntar sobre este produto</button></div>
-      <div class="prod-card"><div class="prod-name">💧 Shampoo Hidratante 1L</div><div class="prod-price">R$ 40,00</div><button class="prod-btn" onclick="askAbout('Shampoo Hidratante 1L por R$ 40,00')">Perguntar sobre este produto</button></div>
-      <div class="prod-card"><div class="prod-name">✨ Condicionador Hidratante 1L</div><div class="prod-price">R$ 40,00</div><button class="prod-btn" onclick="askAbout('Condicionador Hidratante 1L por R$ 40,00')">Perguntar sobre este produto</button></div>
-      <div class="prod-card"><div class="prod-name">🌸 Kit Matizador</div><div class="prod-price">R$ 39,90</div><button class="prod-btn" onclick="askAbout('Kit Matizador por R$ 39,90')">Perguntar sobre este produto</button></div>
+    <div class="chat-input-row">
+      <input id="chatInput" placeholder="Digite sua mensagem..." onkeydown="if(event.key==='Enter')sendChat()">
+      <button onclick="sendChat()">Enviar</button>
     </div>
   </div>
+</div>
 
-  <!-- PAINEL ALAN -->
-  <div id="panel-alan" class="tab-panel">
-    <div class="section-title">📦 Painel do Alan — Pedidos para Entregar</div>
-    <div class="crm-stats" id="alanStats"></div>
-    <div class="pedidos-list" id="pedidosList">
-      <div class="empty-state"><div>📦</div><p>Os pedidos fechados pelo chat IA aparecem aqui.<br>Alan só precisa embalar e entregar!</p></div>
-    </div>
-  </div>
+<div id="panel-alan" class="tab-panel">
+  <div class="section-title">📦 Pedidos para Entregar</div>
+  <div class="crm-stats" id="alanStats"></div>
+  <div class="pedidos-list" id="pedidosList"><div class="loading">Carregando...</div></div>
+</div>
 
-  <!-- CRM -->
-  <div id="panel-crm" class="tab-panel">
-    <div class="section-title">📊 CRM Pipeline</div>
-    <div class="crm-stats" id="crmStats"></div>
-    <div style="display:flex; justify-content:flex-end; margin-bottom:12px;">
-      <button onclick="openAddLead()" style="padding:10px 20px; background:var(--primary); color:#fff; border:none; border-radius:10px; font-weight:700; cursor:pointer; font-size:0.88rem;">+ Novo Lead</button>
-    </div>
-    <div class="pipeline" id="pipeline"></div>
-  </div>
+<div id="panel-crm" class="tab-panel">
+  <div class="section-title">📊 CRM Pipeline</div>
+  <div class="crm-stats" id="crmStats"></div>
+  <div class="section-actions"><button class="btn btn-primary" onclick="openLead()">+ Novo Lead</button></div>
+  <div class="pipeline" id="pipeline"><div class="loading">Carregando...</div></div>
+</div>
 
-  <!-- OFFERS -->
-  <div id="panel-offers" class="tab-panel">
-    <div class="section-title">🏷️ Gerador de Ofertas Diárias</div>
-    <div class="offer-controls">
-      <div><label>Desconto (%)</label><br><input type="number" id="offerDiscount" value="10" min="1" max="80" /></div>
-      <div><label>Produto</label><br>
-        <select id="offerProduct">
-          <option value="all">Todos os produtos</option>
-          <option value="0">Shampoo 1L</option>
-          <option value="1">Shampoo Hidratante 1L</option>
-          <option value="2">Condicionador Hidratante 1L</option>
-          <option value="3">Kit Matizador</option>
-        </select>
-      </div>
-      <button class="offer-gen-btn" onclick="generateOffers()">🎯 Gerar Ofertas</button>
-    </div>
-    <div class="offers-grid" id="offersGrid"></div>
-  </div>
+<div id="panel-produtos" class="tab-panel">
+  <div class="section-title">🛍️ Catálogo de Produtos</div>
+  <div class="section-actions"><button class="btn btn-primary" onclick="openProduto()">+ Novo Produto</button></div>
+  <div class="produtos-list" id="produtosList"><div class="loading">Carregando...</div></div>
+</div>
 
-  <!-- ORDERS -->
-  <div id="panel-orders" class="tab-panel">
-    <div class="section-title">🛒 Fazer Pedido Manual</div>
-    <div class="order-layout">
-      <div>
-        <div class="products-grid" id="productsGrid"></div>
-      </div>
-      <div>
-        <div class="card cart-card">
-          <div class="card-header">🛒 Carrinho</div>
-          <div class="card-body">
-            <div id="cartItems"><div class="empty-cart">Nenhum item adicionado.</div></div>
-            <div id="cartTotalRow" style="display:none" class="cart-total"><span>Total</span><span class="cart-total-val" id="cartTotal">R$ 0,00</span></div>
-            <div class="customer-form">
-              <div class="field-group"><label>Nome do cliente *</label><input type="text" id="custName" placeholder="Ex: Maria Silva" /></div>
-              <div class="field-group"><label>Endereço de entrega *</label><input type="text" id="custAddr" placeholder="Rua, número, bairro, Curitiba" /></div>
-              <div class="field-group"><label>Pagamento</label>
-                <select id="custPay">
-                  <option value="PIX">PIX (41996615302)</option>
-                  <option value="Dinheiro">Dinheiro</option>
-                  <option value="Cartão">Cartão na entrega</option>
-                </select>
-              </div>
-              <div class="field-group"><label>Observações</label><textarea id="custObs" rows="2" placeholder="Alguma observação?"></textarea></div>
-              <button class="whatsapp-btn" onclick="sendWhatsApp()">📱 Enviar pelo WhatsApp</button>
-              <button class="pix-btn" onclick="showPix()">💳 Gerar Cobrança PIX</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+<div id="panel-offers" class="tab-panel">
+  <div class="section-title">🏷️ Gerador de Ofertas</div>
+  <div class="offer-controls">
+    <div><label>Desconto (%)</label><br><input type="number" id="offerDiscount" value="10" min="1" max="80"></div>
+    <button class="btn btn-primary" onclick="generateOffers()">🎯 Gerar Ofertas</button>
   </div>
+  <div class="offers-grid" id="offersGrid"><div class="loading">Carregando...</div></div>
+</div>
 
 </main>
 
-<!-- MODALS -->
-<div class="modal-overlay" id="modalAddLead">
+<div class="modal-overlay" id="modalLead">
   <div class="modal">
-    <div class="modal-title">➕ Novo Lead / Cliente</div>
+    <div class="modal-title">Lead / Cliente</div>
     <div class="modal-form">
-      <input type="text" id="leadName" placeholder="Nome completo *" />
-      <input type="text" id="leadPhone" placeholder="WhatsApp" />
-      <input type="text" id="leadProduct" placeholder="Produto de interesse" />
-      <input type="text" id="leadValue" placeholder="Valor estimado (R$)" />
+      <input id="leadId" type="hidden">
+      <input id="leadName" placeholder="Nome completo *">
+      <input id="leadPhone" placeholder="WhatsApp">
+      <input id="leadProduct" placeholder="Produto de interesse">
+      <input id="leadValue" placeholder="Valor estimado (R$)" type="number" step="0.01">
+      <input id="leadBairro" placeholder="Bairro">
       <select id="leadStage">
-        <option value="lead">Lead</option>
-        <option value="contato">Em contato</option>
-        <option value="proposta">Proposta enviada</option>
-        <option value="fechado">Fechado</option>
-        <option value="perdido">Perdido</option>
+        <option value="0">Lead</option><option value="1">Em contato</option><option value="2">Proposta</option><option value="3">Fechado</option><option value="4">Perdido</option>
       </select>
     </div>
     <div class="modal-actions">
-      <button class="btn-save" onclick="saveLead()">Salvar</button>
-      <button class="btn-cancel" onclick="closeModal('modalAddLead')">Cancelar</button>
+      <button class="btn-primary btn" onclick="saveLead()">Salvar</button>
+      <button class="btn-secondary btn" onclick="closeModal('modalLead')">Cancelar</button>
     </div>
   </div>
 </div>
 
-<div class="modal-overlay" id="modalPix">
+<div class="modal-overlay" id="modalProduto">
   <div class="modal">
-    <div class="modal-title">💳 Cobrança PIX</div>
-    <p style="font-size:0.88rem; color:var(--muted); margin-bottom:12px;">Envie a chave abaixo para o cliente efetuar o pagamento:</p>
-    <div class="pix-copy"><span style="flex:1">41996615302</span><button onclick="copyPix()">Copiar</button></div>
-    <p id="pixAmount" style="font-weight:800; color:var(--primary); font-size:1.1rem; margin-bottom:8px;"></p>
-    <p style="font-size:0.8rem; color:var(--muted);">Tipo: Telefone · Favorecido: Alprolimp</p>
+    <div class="modal-title">Produto</div>
+    <div class="modal-form">
+      <input id="prodId" type="hidden">
+      <input id="prodNome" placeholder="Nome do produto *">
+      <input id="prodPreco" placeholder="Preço R$" type="number" step="0.01">
+      <textarea id="prodDesc" placeholder="Descrição" rows="3"></textarea>
+    </div>
     <div class="modal-actions">
-      <button class="btn-save" onclick="sharePixWhats()">📱 Compartilhar no WhatsApp</button>
-      <button class="btn-cancel" onclick="closeModal('modalPix')">Fechar</button>
+      <button class="btn-primary btn" onclick="saveProduto()">Salvar</button>
+      <button class="btn-secondary btn" onclick="closeModal('modalProduto')">Cancelar</button>
     </div>
   </div>
 </div>
+
+<div class="toast" id="toast"></div>
 
 <script>
-const PRODUCTS = [
-  { name: 'Shampoo 1L', price: 45.00, emoji: '🧴' },
-  { name: 'Shampoo Hidratante 1L', price: 40.00, emoji: '💧' },
-  { name: 'Condicionador Hidratante 1L', price: 40.00, emoji: '✨' },
-  { name: 'Kit Matizador', price: 39.90, emoji: '🌸' },
-];
+const ETAPAS=['Lead','Em Contato','Proposta','Fechado','Perdido'];
+let produtos=[],clientes=[],pedidos=[],chatHistory=[];
 
-const STAGES = [
-  { key: 'lead', label: 'Lead', cls: 'col-lead' },
-  { key: 'contato', label: 'Em Contato', cls: 'col-contato' },
-  { key: 'proposta', label: 'Proposta', cls: 'col-proposta' },
-  { key: 'fechado', label: 'Fechado', cls: 'col-fechado' },
-  { key: 'perdido', label: 'Perdido', cls: 'col-perdido' },
-];
+async function api(path,opts={}){
+  const res=await fetch('/api/'+path,{headers:{'Content-Type':'application/json'},...opts});
+  return res.json();
+}
 
-let cart = [];
-let leads = JSON.parse(localStorage.getItem('alp_leads') || '[]');
-let pedidos = JSON.parse(localStorage.getItem('alp_pedidos') || '[]');
-let chatHistory = [];
-let editingLeadId = null;
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+function now(){return new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
 
-function switchTab(name) {
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-  document.getElementById('panel-' + name).classList.add('active');
-  const map = { chat: 0, alan: 1, crm: 2, offers: 3, orders: 4 };
-  document.querySelectorAll('nav button')[map[name]].classList.add('active');
-  if (name === 'crm') renderCRM();
-  if (name === 'offers') generateOffers();
-  if (name === 'alan') renderAlan();
-  if (name === 'orders') renderProducts();
+function switchTab(name,el){
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  el.classList.add('active');
+  if(name==='alan')loadPedidos();
+  if(name==='crm')loadClientes();
+  if(name==='produtos')loadProdutos();
+  if(name==='offers')generateOffers();
 }
 
 // CHAT
-function now() { return new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }); }
+function appendMsg(role,text){
+  const c=document.getElementById('chatMessages');
+  const d=document.createElement('div');d.className='msg '+role;
+  d.innerHTML=`<div class="msg-bubble">${text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div><div class="msg-time">${now()}</div>`;
+  c.appendChild(d);c.scrollTop=c.scrollHeight;
+}
+function showTyping(){const c=document.getElementById('chatMessages');const d=document.createElement('div');d.className='msg bot';d.id='typing';d.innerHTML='<div class="typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>';c.appendChild(d);c.scrollTop=c.scrollHeight;}
+function hideTyping(){const t=document.getElementById('typing');if(t)t.remove();}
 
-function appendMsg(role, text) {
-  const chatMessages = document.getElementById('chatMessages');
-  const div = document.createElement('div');
-  div.className = 'msg ' + (role === 'user' ? 'user' : 'bot');
-  div.innerHTML = `<div class="msg-bubble">${text.replace(/\n/g,'<br>').replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div><div class="msg-time">${now()}</div>`;
-  chatMessages.appendChild(div);
-  chatMessages.scrollTop = chatMessages.scrollHeight;
+function extrairPedido(txt){const m=txt.match(/\[PEDIDO_FECHADO\|nome:([^|]+)\|endereco:([^|]+)\|itens:([^|]+)\|total:([^\]]+)\]/);if(!m)return null;return{nome_cliente:m[1].trim(),endereco:m[2].trim(),itens:m[3].trim(),total:parseFloat(m[4].replace('R$','').replace(',','.').trim())||0};}
+function limparTexto(txt){return txt.replace(/\[PEDIDO_FECHADO[^\]]*\]/g,'').trim();}
+
+async function sendChat(){
+  const inp=document.getElementById('chatInput');const t=inp.value.trim();if(!t)return;
+  inp.value='';appendMsg('user',t);chatHistory.push({role:'user',content:t});showTyping();
+  try{
+    const data=await api('chat',{method:'POST',body:JSON.stringify({message:t,history:chatHistory.slice(-10)})});
+    hideTyping();
+    const reply=data.response||data.content||'Erro';
+    const pedido=extrairPedido(reply);
+    const limpo=limparTexto(reply);
+    appendMsg('bot',limpo);
+    chatHistory.push({role:'assistant',content:limpo});
+    if(pedido){
+      const num='APL-'+Date.now().toString().slice(-6);
+      await api('pedidos',{method:'POST',body:JSON.stringify({...pedido,numero:num,status:'novo'})});
+      toast('Novo pedido: '+pedido.nome_cliente);
+    }
+  }catch{hideTyping();appendMsg('bot','Erro de conexão.');}
 }
 
-function showTyping() {
-  const chatMessages = document.getElementById('chatMessages');
-  const div = document.createElement('div');
-  div.className = 'msg bot'; div.id = 'typing-indicator';
-  div.innerHTML = `<div class="typing"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>`;
-  chatMessages.appendChild(div);
-  chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-
-function removeTyping() { const t = document.getElementById('typing-indicator'); if (t) t.remove(); }
-
-function extrairPedido(txt) {
-  const m = txt.match(/\[PEDIDO_FECHADO\|nome:([^|]+)\|endereco:([^|]+)\|itens:([^|]+)\|total:([^\]]+)\]/);
-  if (!m) return null;
-  return { nome: m[1].trim(), endereco: m[2].trim(), itens: m[3].trim(), total: m[4].trim() };
-}
-
-function limparTexto(txt) { return txt.replace(/\[PEDIDO_FECHADO[^\]]*\]/g, '').trim(); }
-
-function salvarPedido(dados) {
-  const novo = {
-    id: Date.now(),
-    numero: 'APL-' + (pedidos.length + 1).toString().padStart(3, '0'),
-    nome: dados.nome, endereco: dados.endereco,
-    itens: dados.itens, total: dados.total,
-    status: 'novo', hora: now(),
-    data: new Date().toLocaleDateString('pt-BR')
-  };
-  pedidos.unshift(novo);
-  localStorage.setItem('alp_pedidos', JSON.stringify(pedidos));
-}
-
-async function sendChat() {
-  const input = document.getElementById('chatInput');
-  const btn = document.getElementById('chatSendBtn');
-  const text = input.value.trim();
-  if (!text) return;
-  input.value = ''; btn.disabled = true; input.disabled = true;
-  appendMsg('user', text);
-  chatHistory.push({ role: 'user', content: text });
-  showTyping();
-  try {
-    const res = await fetch('/api/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: text, history: chatHistory.slice(-10) }),
-    });
-    const data = await res.json();
-    removeTyping();
-    const reply = data.response || data.content || data.error || 'Erro ao obter resposta.';
-    const pedido = extrairPedido(reply);
-    const textoLimpo = limparTexto(reply);
-    appendMsg('bot', textoLimpo);
-    chatHistory.push({ role: 'assistant', content: textoLimpo });
-    if (pedido) { salvarPedido(pedido); }
-  } catch {
-    removeTyping();
-    appendMsg('bot', 'Erro de conexão. Por favor, tente novamente.');
-  }
-  btn.disabled = false; input.disabled = false; input.focus();
-}
-
-function askAbout(product) {
-  document.getElementById('chatInput').value = `Quero saber mais sobre o ${product}`;
-  switchTab('chat');
-  sendChat();
-}
-
-// PAINEL ALAN
-function renderAlan() {
-  const stats = document.getElementById('alanStats');
-  const novos = pedidos.filter(p => p.status === 'novo').length;
-  const pix = pedidos.filter(p => p.status === 'pix').length;
-  const fat = pedidos.filter(p => p.status === 'entregue').reduce((s, p) => {
-    const n = parseFloat(p.total.replace('R$','').replace(',','.').trim());
-    return s + (isNaN(n) ? 0 : n);
-  }, 0);
-  stats.innerHTML = `
-    <div class="stat-card"><div class="stat-num">${novos}</div><div class="stat-label">Novos Pedidos</div></div>
+// PEDIDOS
+async function loadPedidos(){
+  pedidos=await api('pedidos');
+  const novos=pedidos.filter(p=>p.status==='novo').length;
+  const pix=pedidos.filter(p=>p.status==='pix').length;
+  const fat=pedidos.filter(p=>p.status==='entregue').reduce((s,p)=>s+(parseFloat(p.total)||0),0);
+  document.getElementById('alanStats').innerHTML=`
+    <div class="stat-card"><div class="stat-num">${novos}</div><div class="stat-label">Novos</div></div>
     <div class="stat-card"><div class="stat-num">${pix}</div><div class="stat-label">Aguard. PIX</div></div>
-    <div class="stat-card"><div class="stat-num">${pedidos.length}</div><div class="stat-label">Total Pedidos</div></div>
-    <div class="stat-card"><div class="stat-num">R$ ${fat.toFixed(2).replace('.',',')}</div><div class="stat-label">Faturado</div></div>
-  `;
-  const lista = document.getElementById('pedidosList');
-  if (!pedidos.length) {
-    lista.innerHTML = '<div class="empty-state"><div>📦</div><p>Os pedidos fechados pelo chat IA aparecem aqui.<br>Alan só precisa embalar e entregar!</p></div>';
-    return;
-  }
-  const statusLabel = { novo: '🆕 Novo', pix: '💳 PIX Recebido', entregue: '✅ Entregue', cancelado: '❌ Cancelado' };
-  lista.innerHTML = pedidos.map((p, i) => `
+    <div class="stat-card"><div class="stat-num">${pedidos.length}</div><div class="stat-label">Total</div></div>
+    <div class="stat-card"><div class="stat-num">R$ ${fat.toFixed(2).replace('.',',')}</div><div class="stat-label">Faturado</div></div>`;
+  const lista=document.getElementById('pedidosList');
+  if(!pedidos.length){lista.innerHTML='<div class="empty-state"><div>📦</div><p>Nenhum pedido ainda.</p></div>';return;}
+  const labels={novo:'🆕 Novo',pix:'💳 PIX',entregue:'✅ Entregue',cancelado:'❌'};
+  lista.innerHTML=pedidos.map(p=>`
     <div class="pedido-item ${p.status}">
-      <div class="pedido-num">${p.numero} · ${p.data} às ${p.hora} · <strong>${statusLabel[p.status] || p.status}</strong></div>
-      <div class="pedido-nome">${p.nome}</div>
-      <div class="pedido-end">📍 ${p.endereco}</div>
-      <div class="pedido-itens">📦 ${p.itens}<div class="pedido-total">${p.total}</div></div>
-      ${p.status !== 'entregue' ? `<div class="pedido-pix">💳 Chave PIX: 41996615302 (Alan)</div>` : ''}
+      <div class="pedido-num">${p.numero||'-'} · ${new Date(p.created_at).toLocaleDateString('pt-BR')} · ${labels[p.status]||p.status}</div>
+      <div class="pedido-nome">${p.nome_cliente}</div>
+      <div class="pedido-end">📍 ${p.endereco||'-'}</div>
+      <div class="pedido-itens">📦 ${p.itens||'-'}<div class="pedido-total">R$ ${parseFloat(p.total||0).toFixed(2).replace('.',',')}</div></div>
+      ${p.status!=='entregue'?'<div class="pedido-pix">💳 PIX: 41996615302</div>':''}
       <div class="pedido-actions">
-        ${p.status === 'novo' ? `<button class="btn-pix" onclick="updatePedido(${i},'pix')">✅ PIX Recebido</button>` : ''}
-        ${p.status === 'pix' ? `<button class="btn-entregar" onclick="updatePedido(${i},'entregue')">🚚 Entregue</button>` : ''}
-        ${p.status === 'entregue' ? `<span style="color:var(--green);font-weight:700;font-size:0.85rem;">✅ Concluído</span>` : ''}
+        ${p.status==='novo'?`<button class="btn-success btn" onclick="updPedido(${p.id},'pix')">✅ PIX Recebido</button>`:''}
+        ${p.status==='pix'?`<button class="btn-primary btn" onclick="updPedido(${p.id},'entregue')">🚚 Entregue</button>`:''}
       </div>
     </div>`).join('');
 }
-
-function updatePedido(i, status) {
-  pedidos[i].status = status;
-  localStorage.setItem('alp_pedidos', JSON.stringify(pedidos));
-  renderAlan();
-}
+async function updPedido(id,status){await api('pedidos/'+id,{method:'PATCH',body:JSON.stringify({status})});loadPedidos();toast('Atualizado!');}
 
 // CRM
-function saveLeads() { localStorage.setItem('alp_leads', JSON.stringify(leads)); }
-
-function renderCRM() {
-  const stats = document.getElementById('crmStats');
-  const total = leads.length;
-  const fechados = leads.filter(l => l.stage === 'fechado').length;
-  const valor = leads.filter(l => l.stage === 'fechado').reduce((s, l) => s + (parseFloat(l.value) || 0), 0);
-  const em = leads.filter(l => l.stage === 'contato' || l.stage === 'proposta').length;
-  stats.innerHTML = `
-    <div class="stat-card"><div class="stat-num">${total}</div><div class="stat-label">Total de Leads</div></div>
+async function loadClientes(){
+  clientes=await api('clientes');
+  const total=clientes.length;
+  const fechados=clientes.filter(c=>c.etapa===3).length;
+  const valor=clientes.filter(c=>c.etapa===3).reduce((s,c)=>s+(parseFloat(c.valor)||0),0);
+  const em=clientes.filter(c=>c.etapa===1||c.etapa===2).length;
+  document.getElementById('crmStats').innerHTML=`
+    <div class="stat-card"><div class="stat-num">${total}</div><div class="stat-label">Total</div></div>
     <div class="stat-card"><div class="stat-num">${em}</div><div class="stat-label">Em Negociação</div></div>
     <div class="stat-card"><div class="stat-num">${fechados}</div><div class="stat-label">Fechados</div></div>
-    <div class="stat-card"><div class="stat-num">R$ ${valor.toFixed(2).replace('.',',')}</div><div class="stat-label">Receita Fechada</div></div>
-  `;
-  const pipeline = document.getElementById('pipeline');
-  pipeline.innerHTML = STAGES.map(s => `
-    <div class="pipeline-col ${s.cls}" data-stage="${s.key}">
-      <div class="pipeline-col-header">${s.label}<br><small>${leads.filter(l=>l.stage===s.key).length}</small></div>
-      <div class="drop-zone" id="dz-${s.key}" ondragover="onDragOver(event,this)" ondragleave="onDragLeave(this)" ondrop="onDrop(event,'${s.key}')">
-        ${leads.filter(l => l.stage === s.key).map(l => crmCardHTML(l)).join('')}
+    <div class="stat-card"><div class="stat-num">R$ ${valor.toFixed(2).replace('.',',')}</div><div class="stat-label">Receita</div></div>`;
+  const pipe=document.getElementById('pipeline');
+  pipe.innerHTML=ETAPAS.map((e,i)=>`
+    <div class="pipeline-col col-${i}">
+      <div class="pipeline-col-header">${e}<br><small>${clientes.filter(c=>c.etapa===i).length}</small></div>
+      <div class="drop-zone" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="onDrop(event,${i})">
+        ${clientes.filter(c=>c.etapa===i).map(c=>`
+          <div class="crm-card" draggable="true" ondragstart="dragId=${c.id}">
+            <div class="crm-card-name">${c.nome}</div>
+            <div class="crm-card-detail">📱 ${c.whatsapp||'-'}</div>
+            <div class="crm-card-detail">📦 ${c.produto_interesse||'-'}</div>
+            ${c.valor?`<div class="crm-card-value">R$ ${parseFloat(c.valor).toFixed(2).replace('.',',')}</div>`:''}
+            <div class="crm-card-actions">
+              <button class="btn-edit" onclick="editLead(${c.id})">✏️</button>
+              <button class="btn-del" onclick="delLead(${c.id})">🗑️</button>
+            </div>
+          </div>`).join('')}
       </div>
-      <button class="add-crm-btn" onclick="openAddLead('${s.key}')">+ Adicionar</button>
     </div>`).join('');
 }
-
-function crmCardHTML(l) {
-  return `<div class="crm-card" draggable="true" id="card-${l.id}" ondragstart="onDragStart(event,'${l.id}')">
-    <div class="crm-card-name">${l.name}</div>
-    <div class="crm-card-detail">📱 ${l.phone || '—'}</div>
-    <div class="crm-card-detail">📦 ${l.product || '—'}</div>
-    ${l.value ? `<div class="crm-card-value">R$ ${parseFloat(l.value).toFixed(2).replace('.',',')}</div>` : ''}
-    <div class="crm-card-actions">
-      <button class="btn-edit" onclick="editLead('${l.id}')">✏️</button>
-      <button class="btn-del" onclick="deleteLead('${l.id}')">🗑️</button>
-    </div>
-  </div>`;
+let dragId=null;
+async function onDrop(e,etapa){e.preventDefault();document.querySelectorAll('.drop-zone').forEach(el=>el.classList.remove('drag-over'));if(dragId){await api('clientes/'+dragId,{method:'PATCH',body:JSON.stringify({etapa})});loadClientes();dragId=null;}}
+function openLead(){document.getElementById('leadId').value='';['leadName','leadPhone','leadProduct','leadValue','leadBairro'].forEach(id=>document.getElementById(id).value='');document.getElementById('leadStage').value='0';document.getElementById('modalLead').classList.add('open');}
+function editLead(id){const c=clientes.find(x=>x.id===id);if(!c)return;document.getElementById('leadId').value=c.id;document.getElementById('leadName').value=c.nome||'';document.getElementById('leadPhone').value=c.whatsapp||'';document.getElementById('leadProduct').value=c.produto_interesse||'';document.getElementById('leadValue').value=c.valor||'';document.getElementById('leadBairro').value=c.bairro||'';document.getElementById('leadStage').value=c.etapa||0;document.getElementById('modalLead').classList.add('open');}
+async function saveLead(){
+  const nome=document.getElementById('leadName').value.trim();if(!nome){alert('Informe nome');return;}
+  const data={nome,whatsapp:document.getElementById('leadPhone').value.trim(),produto_interesse:document.getElementById('leadProduct').value.trim(),valor:parseFloat(document.getElementById('leadValue').value)||null,bairro:document.getElementById('leadBairro').value.trim(),etapa:parseInt(document.getElementById('leadStage').value)};
+  const id=document.getElementById('leadId').value;
+  if(id)await api('clientes/'+id,{method:'PATCH',body:JSON.stringify(data)});else await api('clientes',{method:'POST',body:JSON.stringify(data)});
+  closeModal('modalLead');loadClientes();toast('Salvo!');
 }
+async function delLead(id){if(!confirm('Excluir?'))return;await api('clientes/'+id,{method:'DELETE'});loadClientes();toast('Excluído!');}
 
-let draggingId = null;
-function onDragStart(e, id) { draggingId = id; }
-function onDragOver(e, el) { e.preventDefault(); el.classList.add('drag-over'); }
-function onDragLeave(el) { el.classList.remove('drag-over'); }
-function onDrop(e, stage) {
-  e.preventDefault();
-  document.querySelectorAll('.drop-zone').forEach(el => el.classList.remove('drag-over'));
-  if (draggingId) { const lead = leads.find(l => l.id === draggingId); if (lead) { lead.stage = stage; saveLeads(); renderCRM(); } draggingId = null; }
-}
-
-function openAddLead(stage = 'lead') {
-  editingLeadId = null;
-  ['leadName','leadPhone','leadProduct','leadValue'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('leadStage').value = stage;
-  document.getElementById('modalAddLead').classList.add('open');
-}
-
-function editLead(id) {
-  const l = leads.find(l => l.id === id); if (!l) return;
-  editingLeadId = id;
-  document.getElementById('leadName').value = l.name;
-  document.getElementById('leadPhone').value = l.phone;
-  document.getElementById('leadProduct').value = l.product;
-  document.getElementById('leadValue').value = l.value;
-  document.getElementById('leadStage').value = l.stage;
-  document.getElementById('modalAddLead').classList.add('open');
-}
-
-function saveLead() {
-  const name = document.getElementById('leadName').value.trim();
-  if (!name) { alert('Informe o nome do lead.'); return; }
-  const lead = { id: editingLeadId || Date.now().toString(), name, phone: document.getElementById('leadPhone').value.trim(), product: document.getElementById('leadProduct').value.trim(), value: document.getElementById('leadValue').value.trim(), stage: document.getElementById('leadStage').value };
-  if (editingLeadId) leads = leads.map(l => l.id === editingLeadId ? lead : l);
-  else leads.push(lead);
-  saveLeads(); closeModal('modalAddLead'); renderCRM();
-}
-
-function deleteLead(id) {
-  if (!confirm('Excluir este lead?')) return;
-  leads = leads.filter(l => l.id !== id); saveLeads(); renderCRM();
-}
-
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-
-// ORDERS
-function renderProducts() {
-  const grid = document.getElementById('productsGrid');
-  if (!grid) return;
-  grid.innerHTML = PRODUCTS.map((p, i) => `
-    <div class="order-prod-card">
-      <div style="font-size:2rem">${p.emoji}</div>
-      <div class="order-prod-name">${p.name}</div>
-      <div class="order-prod-price">R$ ${p.price.toFixed(2).replace('.',',')}</div>
-      <div class="qty-row">
-        <button class="qty-btn" onclick="changeQty(${i},-1)">−</button>
-        <span class="qty-num" id="qty-${i}">0</span>
-        <button class="qty-btn" onclick="changeQty(${i},1)">+</button>
+// PRODUTOS
+async function loadProdutos(){
+  produtos=await api('produtos');
+  const lista=document.getElementById('produtosList');
+  if(!produtos.length){lista.innerHTML='<div class="empty-state"><div>🛍️</div><p>Nenhum produto.</p></div>';return;}
+  lista.innerHTML=produtos.map(p=>`
+    <div class="produto-row ${p.ativo?'':'inativo'}">
+      <div class="produto-info">
+        <div class="produto-nome">${p.nome}</div>
+        <div class="produto-desc">${p.descricao||''}</div>
       </div>
-      <button class="add-item-btn" onclick="addToCart(${i})">Adicionar</button>
+      <div class="produto-preco">R$ ${parseFloat(p.preco).toFixed(2).replace('.',',')}</div>
+      <div class="produto-actions">
+        <button class="btn-edit" onclick="editProduto(${p.id})">✏️</button>
+        <button class="btn-del" onclick="delProduto(${p.id})">🗑️</button>
+      </div>
     </div>`).join('');
 }
-
-const qtys = [0,0,0,0];
-function changeQty(i, d) { qtys[i] = Math.max(0, qtys[i] + d); document.getElementById('qty-' + i).textContent = qtys[i]; }
-function addToCart(i) {
-  const qty = qtys[i]; if (qty === 0) return;
-  const existing = cart.find(c => c.idx === i);
-  if (existing) existing.qty += qty; else cart.push({ idx: i, qty });
-  qtys[i] = 0; document.getElementById('qty-' + i).textContent = 0; renderCart();
+function openProduto(){document.getElementById('prodId').value='';document.getElementById('prodNome').value='';document.getElementById('prodPreco').value='';document.getElementById('prodDesc').value='';document.getElementById('modalProduto').classList.add('open');}
+function editProduto(id){const p=produtos.find(x=>x.id===id);if(!p)return;document.getElementById('prodId').value=p.id;document.getElementById('prodNome').value=p.nome;document.getElementById('prodPreco').value=p.preco;document.getElementById('prodDesc').value=p.descricao||'';document.getElementById('modalProduto').classList.add('open');}
+async function saveProduto(){
+  const nome=document.getElementById('prodNome').value.trim();const preco=parseFloat(document.getElementById('prodPreco').value);
+  if(!nome||!preco){alert('Nome e preço obrigatórios');return;}
+  const data={nome,preco,descricao:document.getElementById('prodDesc').value.trim(),ativo:true};
+  const id=document.getElementById('prodId').value;
+  if(id)await api('produtos/'+id,{method:'PATCH',body:JSON.stringify(data)});else await api('produtos',{method:'POST',body:JSON.stringify(data)});
+  closeModal('modalProduto');loadProdutos();toast('Salvo!');
 }
-function removeFromCart(i) { cart = cart.filter(c => c.idx !== i); renderCart(); }
-function renderCart() {
-  const el = document.getElementById('cartItems');
-  const totalRow = document.getElementById('cartTotalRow');
-  if (cart.length === 0) { el.innerHTML = '<div class="empty-cart">Nenhum item adicionado.</div>'; totalRow.style.display = 'none'; return; }
-  let total = 0;
-  el.innerHTML = cart.map(c => { const p = PRODUCTS[c.idx]; const sub = p.price * c.qty; total += sub; return `<div class="cart-item"><span class="cart-item-name">${p.emoji} ${p.name} × ${c.qty}</span><div class="cart-item-right"><span class="cart-item-price">R$ ${sub.toFixed(2).replace('.',',')}</span><button class="cart-remove" onclick="removeFromCart(${c.idx})">✕</button></div></div>`; }).join('');
-  document.getElementById('cartTotal').textContent = 'R$ ' + total.toFixed(2).replace('.', ',');
-  totalRow.style.display = 'flex';
-}
-function cartTotal() { return cart.reduce((s, c) => s + PRODUCTS[c.idx].price * c.qty, 0); }
-function cartSummary() { return cart.map(c => `${c.qty}× ${PRODUCTS[c.idx].name}`).join(', '); }
-function sendWhatsApp() {
-  if (cart.length === 0) { alert('Adicione produtos ao carrinho.'); return; }
-  const name = document.getElementById('custName').value.trim();
-  const addr = document.getElementById('custAddr').value.trim();
-  const pay = document.getElementById('custPay').value;
-  const obs = document.getElementById('custObs').value.trim();
-  const total = cartTotal();
-  let msg = `🛒 *Pedido Alprolimp*\n\n`;
-  if (name) msg += `👤 *Cliente:* ${name}\n`;
-  if (addr) msg += `📍 *Endereço:* ${addr}\n`;
-  msg += `\n*Itens:* ${cartSummary()}\n💰 *Total: R$ ${total.toFixed(2).replace('.',',')}*\n💳 *Pagamento:* ${pay}\n`;
-  if (obs) msg += `📝 *Obs:* ${obs}\n`;
-  const a = document.createElement('a'); a.href = 'https://wa.me/5541996615302?text=' + encodeURIComponent(msg); a.target = '_blank'; document.body.appendChild(a); a.click(); document.body.removeChild(a);
-}
-function showPix() {
-  if (cart.length === 0) { alert('Adicione produtos ao carrinho.'); return; }
-  const total = cartTotal();
-  document.getElementById('pixAmount').textContent = `Total: R$ ${total.toFixed(2).replace('.',',')}`;
-  document.getElementById('modalPix').classList.add('open');
-}
-function copyPix() { navigator.clipboard.writeText('41996615302').then(() => alert('Chave PIX copiada!')); }
-function sharePixWhats() {
-  const total = cartTotal();
-  const name = document.getElementById('custName').value.trim() || 'cliente';
-  const msg = `Olá ${name}!\n\nPIX: 41996615302\nValor: R$ ${total.toFixed(2).replace('.',',')}\nFavorecido: Alprolimp`;
-  const a = document.createElement('a'); a.href = 'https://wa.me/5541996615302?text=' + encodeURIComponent(msg); a.target = '_blank'; document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  closeModal('modalPix');
-}
+async function delProduto(id){if(!confirm('Excluir produto?'))return;await api('produtos/'+id,{method:'DELETE'});loadProdutos();toast('Excluído!');}
 
 // OFFERS
-const EMOJIS = ['🧴','💧','✨','🌸'];
-const COLORS = [['#7c3aed','#ede9fe'],['#f472b6','#fdf2f8'],['#16a34a','#dcfce7'],['#ea580c','#fff7ed']];
-function generateOffers() {
-  const discount = parseInt(document.getElementById('offerDiscount').value) || 10;
-  const productFilter = document.getElementById('offerProduct').value;
-  const products = productFilter === 'all' ? PRODUCTS : [PRODUCTS[parseInt(productFilter)]];
-  const grid = document.getElementById('offersGrid');
-  grid.innerHTML = products.map((p, i) => {
-    const [bg, lightBg] = COLORS[i % COLORS.length];
-    const discounted = p.price * (1 - discount / 100);
-    const today = new Date().toLocaleDateString('pt-BR');
-    return `<div class="offer-card">
-      <div class="offer-banner" style="background: linear-gradient(135deg, ${bg}, ${lightBg})">${EMOJIS[i % EMOJIS.length]}${EMOJIS[i % EMOJIS.length]}</div>
+const EMOJIS=['🧴','💧','✨','🌸','💜','🎀','💫','🌟','🌿','💚','🥥','🌺'];
+const COLORS=[['#7c3aed','#ede9fe'],['#f472b6','#fdf2f8'],['#16a34a','#dcfce7'],['#ea580c','#fff7ed']];
+async function generateOffers(){
+  if(!produtos.length)produtos=await api('produtos');
+  const discount=parseInt(document.getElementById('offerDiscount').value)||10;
+  const grid=document.getElementById('offersGrid');
+  grid.innerHTML=produtos.map((p,i)=>{
+    const[bg,lt]=COLORS[i%COLORS.length];const em=EMOJIS[i%EMOJIS.length];
+    const dis=parseFloat(p.preco)*(1-discount/100);
+    return`<div class="offer-card">
+      <div class="offer-banner" style="background:linear-gradient(135deg,${bg},${lt})">${em}${em}${em}</div>
       <div class="offer-body">
-        <span class="offer-badge">🔥 OFERTA DO DIA · ${today}</span>
-        <div class="offer-title">${p.name}</div>
-        <div class="offer-desc">Entrega em toda Curitiba · PIX: 41996615302</div>
-        <div class="offer-original">De: R$ ${p.price.toFixed(2).replace('.',',')}</div>
-        <div class="offer-price">Por: R$ ${discounted.toFixed(2).replace('.',',')} <span style="font-size:0.8rem;color:var(--muted);">${discount}% OFF</span></div>
-        <button class="offer-share" onclick="shareOffer('${p.name}',${discounted.toFixed(2)},${discount})">📱 Compartilhar no WhatsApp</button>
+        <span class="offer-badge">🔥 OFERTA · ${new Date().toLocaleDateString('pt-BR')}</span>
+        <div class="offer-title">${p.nome}</div>
+        <div class="offer-desc">Entrega Curitiba · PIX: 41996615302</div>
+        <div class="offer-original">De: R$ ${parseFloat(p.preco).toFixed(2).replace('.',',')}</div>
+        <div class="offer-price">Por: R$ ${dis.toFixed(2).replace('.',',')} <span style="font-size:.8rem;color:var(--muted)">${discount}% OFF</span></div>
+        <button class="offer-share" onclick="shareOffer('${p.nome.replace(/'/g,'')}',${dis.toFixed(2)},${discount})">📱 Compartilhar</button>
       </div>
     </div>`;
   }).join('');
 }
-
-function shareOffer(name, price, discount) {
-  const today = new Date().toLocaleDateString('pt-BR');
-  const msg = `🌟 *OFERTA DO DIA · ${today}* 🌟\n\n💜 *${name}*\n🔥 ${discount}% de desconto!\n💰 *Por apenas R$ ${price.toFixed(2).replace('.',',')}*\n\n🚚 Entrega em toda Curitiba\n💳 PIX: 41996615302\n\nPeça agora! 📱 +55 41 99661-5302\n\n_Alprolimp · Distribuidora Premisse Cosméticos_`;
-  const a = document.createElement('a'); a.href = 'https://wa.me/5541996615302?text=' + encodeURIComponent(msg); a.target = '_blank'; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+function shareOffer(nome,preco,disc){
+  const msg=`🌟 *OFERTA DO DIA* 🌟\n\n💜 *${nome}*\n🔥 ${disc}% OFF\n💰 R$ ${preco.toFixed(2).replace('.',',')}\n\n🚚 Entrega Curitiba\n💳 PIX: 41996615302\n📱 +55 41 99661-5302\n\n_Alprolimp · Premisse_`;
+  const a=document.createElement('a');a.href='https://wa.me/5541996615302?text='+encodeURIComponent(msg);a.target='_blank';document.body.appendChild(a);a.click();document.body.removeChild(a);
 }
 
-document.querySelectorAll('.modal-overlay').forEach(el => {
-  el.addEventListener('click', e => { if (e.target === el) el.classList.remove('open'); });
-});
-
-generateOffers();
+document.querySelectorAll('.modal-overlay').forEach(el=>el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');}));
 </script>
 </body>
 </html>
